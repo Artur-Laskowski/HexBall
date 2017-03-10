@@ -31,8 +31,14 @@ namespace HexBall
         /// </summary>
         public int Size { get; set; }
 
+        /// <summary>
+        /// Entity color. Assigned on creation
+        /// </summary>
         public Color EntityColor;
 
+        /// <summary>
+        /// How quickly entity looses velocity. For ball it will be less.
+        /// </summary>
         public double EntitySlowdown { get; set; } = 0.001;
 
         public Entity()

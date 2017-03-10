@@ -40,6 +40,11 @@ namespace HexBall
 
             attributes = new List<Tuple<Pair, Color, int>>();
 
+            //We create 5 ellipses (4 players and 1 ball).
+            //Unused ones have 0 size so are not visible.
+            //TODO do it dynamically?
+            //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
+            //If we need them, we change their size and color.
             for (int i = 0; i < 5; i++) {
                 Ellipse myEllipse = new Ellipse();
 
@@ -56,9 +61,8 @@ namespace HexBall
 
                 // Set the width and height of the Ellipse.
                 myEllipse.Width = 0;
-                myEllipse.Height = 0;
-                //TranslateTransform tt = new TranslateTransform(e.Position.First, e.Position.Second);
-                //myEllipse.RenderTransform = tt;
+                myEllipse.Height = 0; //All 5 possible objects
+
 
                 //myEllipse.SetValue(Canvas.TopProperty, 10);
                 //myEllipse.SetValue(Canvas.LeftProperty, 10);
@@ -88,7 +92,6 @@ namespace HexBall
                 shape.Width = attribute.Item3;
                 shape.Height = attribute.Item3;
             }
-            System.Console.WriteLine("test");
         }
     }
 }

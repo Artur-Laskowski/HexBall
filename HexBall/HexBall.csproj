@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>HexBall</RootNamespace>
     <AssemblyName>HexBall</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
