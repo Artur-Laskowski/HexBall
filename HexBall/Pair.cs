@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HexBall
 {
@@ -31,6 +27,11 @@ namespace HexBall
             return new Pair(a.First + b.First, a.Second + b.Second);
         }
 
+        public static Pair operator -(Pair a, Pair b)
+        {
+            return new Pair(a.First - b.First, a.Second - b.Second);
+        }
+
         public static Pair operator *(Pair a, double b)
         {
             return new Pair(a.First * b, a.Second * b);
@@ -40,6 +41,11 @@ namespace HexBall
         {
             First = a;
             Second = b;
+        }
+
+        public static double Distance(Pair a, Pair b)
+        {
+            return Math.Sqrt(Math.Pow(b.First - a.First, 2) + Math.Pow(b.Second - a.Second, 2));
         }
     }
 }

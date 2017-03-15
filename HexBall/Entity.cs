@@ -1,45 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace HexBall
 {
     /// <summary>
-    /// Base class for handing collision, velocity, position, etc.
+    ///     Base class for handing collision, velocity, position, etc.
     /// </summary>
-    class Entity
+    internal class Entity
     {
         /// <summary>
-        /// Entity's position
-        /// </summary>
-
-        public Pair Position { get; set; }
-        /// <summary>
-        /// Current speed
-        /// </summary>
-        public Pair Velocity { get; set; }
-        /// <summary>
-        /// Maximum speed of entity. Used in functions updating speed.
-        /// Different for ball and player, can be changed during events.
-        /// </summary>
-        public double MaxVelocity { get; set; } 
-        /// <summary>
-        /// Entity's size. Used for collision.
-        /// </summary>
-        public int Size { get; set; }
-
-        /// <summary>
-        /// Entity color. Assigned on creation
+        ///     Entity color. Assigned on creation
         /// </summary>
         public Color EntityColor;
 
-        /// <summary>
-        /// How quickly entity looses velocity. For ball it will be less.
-        /// </summary>
-        public double EntitySlowdown { get; set; } = 0.001;
+        public int Margin = 0;
 
         public Entity()
         {
@@ -50,9 +24,11 @@ namespace HexBall
         }
 
         /// <summary>
-        /// Create object at set coordinates, maximum velocity and size.
+        ///     Create object at set coordinates, maximum velocity and size.
         /// </summary>
         /// <param name="position"></param>
+        /// <param name="maxVelocity"></param>
+        /// <param name="size"></param>
         public Entity(Pair position, double maxVelocity, int size)
         {
             Position = position;
@@ -61,87 +37,140 @@ namespace HexBall
             Velocity = new Pair(0, 0);
         }
 
+        /// <summary>
+        ///     Entity's position
+        /// </summary>
+        public Pair Position { get; set; }
 
         /// <summary>
-        /// Handles collision. Called when object collides with stuff.
+        ///     Current speed
+        /// </summary>
+        public Pair Velocity { get; set; }
+
+        /// <summary>
+        ///     Maximum speed of entity. Used in functions updating speed.
+        ///     Different for ball and player, can be changed during events.
+        /// </summary>
+        public double MaxVelocity { get; set; }
+
+        /// <summary>
+        ///     Entity's size. Used for collision.
+        /// </summary>
+        public int Size { get; set; }
+
+        /// <summary>
+        ///     How quickly entity looses velocity. For ball it will be less.
+        /// </summary>
+        public double EntitySlowdown { get; set; } = 0.001;
+
+
+        /// <summary>
+        ///     Handles collision. Called when object collides with stuff.
         /// </summary>
         /// <param name="collider"></param>
         public virtual void Collide(Entity collider)
         {
-            
         }
+
         /// <summary>
-        /// Increase velocity by given vector.
-        /// If new velocity exceeds maximum, then it's reduced to maximum allowed.
+        ///     Increase velocity by given vector.
+        ///     If new velocity exceeds maximum, then it's reduced to maximum allowed.
         /// </summary>
         /// <param name="velocity"></param>
         public void AddVelocity(Pair velocity)
         {
             SetVelocity(Velocity + velocity);
             if (GetVelocity() > MaxVelocity)
-            {
                 SetVelocity(MaxVelocity);
-            }
         }
+
         /// <summary>
-        /// Set velocity to given vector.
+        ///     Set velocity to given vector.
         /// </summary>
         /// <param name="velocity"></param>
         public void SetVelocity(Pair velocity)
         {
             Velocity = velocity;
         }
+
         /// <summary>
-        /// Scale current velocity.
+        ///     Scale current velocity.
         /// </summary>
         /// <param name="velocity"></param>
         public void SetVelocity(double velocity)
         {
-            if (GetVelocity() == 0)
+            if (Math.Abs(GetVelocity()) < 0.01)
             {
                 return;
             }
-            double ratio = velocity / GetVelocity();
+
+            var ratio = velocity / GetVelocity();
             Velocity *= ratio;
         }
+
         /// <summary>
-        /// Used to get absolute velocity of entity.
+        ///     Used to get absolute velocity of entity.
         /// </summary>
         /// <returns>Absolute velocity as double.</returns>
         public double GetVelocity()
         {
             return Math.Sqrt(Math.Pow(Velocity.First, 2) + Math.Pow(Velocity.Second, 2));
         }
+
         /// <summary>
-        /// Called every frame, handles velocity deteriorating over time, etc.
-        /// Called from Update().
+        ///     Called every frame, handles velocity deteriorating over time, etc.
+        ///     Called from Update().
         /// </summary>
-        virtual protected void UpdateVelocity()
+        protected virtual void UpdateVelocity()
         {
-            double vel = GetVelocity();
+            var vel = GetVelocity();
             vel -= EntitySlowdown;
             if (vel < 0)
                 vel = 0;
             SetVelocity(vel);
         }
+
         /// <summary>
-        /// Updates object's position every frame, based on it's velocity.
-        /// Called from Update().
+        ///     Updates object's position every frame, based on it's velocity.
+        ///     Called from Update().
         /// </summary>
-        protected void UpdatePosition()
+        protected virtual void UpdatePosition()
         {
-            Pair proposedPos = new Pair()
+            var proposedPos = new Pair
             {
-                First = Position.First + Velocity.First * Game.time_delta,
-                Second = Position.Second + Velocity.Second * Game.time_delta
+                First = Position.First + Velocity.First * Game.TimeDelta,
+                Second = Position.Second + Velocity.Second * Game.TimeDelta
             };
-            if (Game.IsInBounds(proposedPos)) //TODO: additional checks(collision,etc), if fails, set velocity to 0
+            if (Game.IsInBounds(proposedPos, Margin))
+                //TODO: additional checks(collision,etc), if fails, set velocity to 0
             {
-                Position = proposedPos;
+                var flag = false;
+                foreach (var e in Game.Entities)
+                    if (Pair.Distance(e.Position, Position) < (double)(e.Size + Size) / 2)
+                    {
+                        Collide(e);
+                        flag = true;
+                    }
+                if (!flag)
+                {
+                    proposedPos.First = Position.First + Velocity.First * Game.TimeDelta;
+                    proposedPos.Second = Position.Second + Velocity.Second * Game.TimeDelta;
+                }
+                if (Game.IsInBounds(proposedPos, Margin))
+                {
+                    Position = proposedPos;
+                }
+                else
+                {
+                    proposedPos.First = Position.First - Velocity.First * Game.TimeDelta;
+                    proposedPos.Second = Position.Second - Velocity.Second * Game.TimeDelta;
+                    Position = proposedPos;
+                }
             }
         }
+
         /// <summary>
-        /// Update function. Called every frame.
+        ///     Update function. Called every frame.
         /// </summary>
         public void Update()
         {

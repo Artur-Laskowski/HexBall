@@ -1,60 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HexBall
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        Game game;
-        List<Ellipse> shapes;
-        List<Tuple<Pair, Color, int>> attributes;
+        private List<Tuple<Pair, Color, int>> _attributes;
+        private readonly Game _game;
+        private readonly List<Ellipse> _shapes;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            game = new Game();
+            _game = new Game();
 
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(10000/60);
+            var dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(10000 / 60);
             dispatcherTimer.Start();
 
-            shapes = new List<Ellipse>();
+            _shapes = new List<Ellipse>();
 
-            attributes = new List<Tuple<Pair, Color, int>>();
+            _attributes = new List<Tuple<Pair, Color, int>>();
 
             //We create 5 ellipses (4 players and 1 ball).
             //Unused ones have 0 size so are not visible.
             //TODO do it dynamically?
             //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
             //If we need them, we change their size and color.
-            for (int i = 0; i < 5; i++) {
-                Ellipse myEllipse = new Ellipse();
+            for (var i = 0; i < 5; i++)
+            {
+                var myEllipse = new Ellipse();
 
                 // Create a SolidColorBrush with a red color to fill the 
                 // Ellipse with.
-                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
+                var mySolidColorBrush = new SolidColorBrush { Color = Color.FromArgb(255, 255, 255, 0) };
 
                 // Describes the brush's color using RGB values. 
                 // Each value has a range of 0-255.
-                mySolidColorBrush.Color = Color.FromArgb(255, 255, 255, 0);
                 myEllipse.Fill = mySolidColorBrush;
                 myEllipse.StrokeThickness = 2;
                 myEllipse.Stroke = Brushes.Black;
@@ -67,30 +59,55 @@ namespace HexBall
                 //myEllipse.SetValue(Canvas.TopProperty, 10);
                 //myEllipse.SetValue(Canvas.LeftProperty, 10);
 
-                shapes.Add(myEllipse);
+                _shapes.Add(myEllipse);
 
                 canvas1.Children.Add(myEllipse);
             }
-        }
-        
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            game.Update(out attributes);
-
             
+            var brush = new SolidColorBrush { Color = Color.FromArgb(128, 128, 128, 0) };
 
-            for (int i = 0; i < attributes.Count; i++)
+            var zoneA = new Rectangle
             {
-                Ellipse shape = shapes.ElementAt(i);
-                Tuple<Pair, Color, int> attribute = attributes.ElementAt(i);
+                Fill = brush,
+                Width = Math.Abs(Game.ZoneA.Item1.First - Game.ZoneA.Item2.First),
+                Height = Math.Abs(Game.ZoneA.Item1.Second - Game.ZoneA.Item2.Second)
+            };
+            canvas1.Children.Add(zoneA);
+            zoneA.SetValue(Canvas.TopProperty, Game.ZoneA.Item1.Second);
+            zoneA.SetValue(Canvas.LeftProperty, Game.ZoneA.Item1.First);
+
+            var zoneB = new Rectangle
+            {
+                Fill = brush,
+                Width = Math.Abs(Game.ZoneB.Item1.First - Game.ZoneB.Item2.First),
+                Height = Math.Abs(Game.ZoneB.Item1.Second - Game.ZoneB.Item2.Second)
+            };
+            canvas1.Children.Add(zoneB);
+            zoneB.SetValue(Canvas.TopProperty, Game.ZoneB.Item1.Second);
+            zoneB.SetValue(Canvas.LeftProperty, Game.ZoneB.Item1.First);
+
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            _game.Update(out _attributes);
+
+
+            for (var i = 0; i < _attributes.Count; i++)
+            {
+                var shape = _shapes.ElementAt(i);
+                var attribute = _attributes.ElementAt(i);
                 shape.SetValue(Canvas.TopProperty, attribute.Item1.First);
                 shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
 
-                SolidColorBrush mySolidColorBrush = new SolidColorBrush(attribute.Item2);
+                var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
                 shape.Fill = mySolidColorBrush;
 
                 shape.Width = attribute.Item3;
                 shape.Height = attribute.Item3;
+
+                scoreLabelA.Content = "Team A: " + Game.ScoreA;
+                scoreLabelB.Content = "Team B: " + Game.ScoreB;
             }
         }
     }
