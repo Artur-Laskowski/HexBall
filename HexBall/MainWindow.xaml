@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HexBall"
         mc:Ignorable="d"
-        Title="MainWindow" Height="635.6" Width="991.679" SizeToContent="WidthAndHeight">
-    <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="10,576,0,0" VerticalAlignment="Top" Width="65"/>
-        <Canvas x:Name="canvas1" HorizontalAlignment="Left" Height="541" Margin="10,10,0,0" VerticalAlignment="Top" Width="966"/>
-        <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="181,580,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="305,580,0,-0.4" VerticalAlignment="Top"/>
+        Title="MainWindow" Height="552.8" Width="988.079" SizeToContent="WidthAndHeight">
+    <Grid Margin="0,0,3.6,100.2">
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="843,10,0,0" VerticalAlignment="Top" Width="65"/>
+        <Canvas x:Name="canvas1" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="800"/>
+        <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="843,74,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="843,130,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

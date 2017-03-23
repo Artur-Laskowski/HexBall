@@ -44,8 +44,8 @@ namespace HexBall
         public static int ScoreA = 0;
         public static int ScoreB = 0;
 
-        public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(20, 100), new Pair(40, 200));
-        public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, 100), new Pair(Size.Item1 - 20, 200));
+        public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2/2 - 50), new Pair(40, Size.Item2/2 + 50));
+        public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2/2 - 50), new Pair(Size.Item1 - 0, Size.Item2/2 + 50));
         
 
         public Game()

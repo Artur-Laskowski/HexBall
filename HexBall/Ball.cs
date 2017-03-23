@@ -14,18 +14,22 @@ namespace HexBall
         {
             base.UpdatePosition();
             var result = Game.HasScored(Position);
+            if (result == -1)
+                return;
+
+
             if (result == 0)
             {
                 Game.ScoreA++;
-                Position.First = Game.Size.Item2 / 2;
-                Position.Second = Game.Size.Item1 / 2;
             }
             if (result == 1)
             {
                 Game.ScoreB++;
-                Position.First = Game.Size.Item2 / 2;
-                Position.Second = Game.Size.Item1 / 2;
             }
+            Position.First = Game.Size.Item2 / 2;
+            Position.Second = Game.Size.Item1 / 2;
+            Velocity.First = 0;
+            Velocity.Second = 0;
         }
     }
 }

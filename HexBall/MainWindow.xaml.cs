@@ -20,7 +20,7 @@ namespace HexBall
         public MainWindow()
         {
             InitializeComponent();
-
+            
             _game = new Game();
 
             var dispatcherTimer = new DispatcherTimer();
