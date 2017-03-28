@@ -64,7 +64,7 @@ namespace HexBall
                 canvas1.Children.Add(myEllipse);
             }
             
-            var brush = new SolidColorBrush { Color = Color.FromArgb(128, 128, 128, 0) };
+            var brush = new SolidColorBrush { Color = Color.FromArgb(200, 200, 200, 0) };
 
             var zoneA = new Rectangle
             {

@@ -26,8 +26,8 @@ namespace HexBall
             {
                 Game.ScoreB++;
             }
-            Position.First = Game.Size.Item2 / 2;
-            Position.Second = Game.Size.Item1 / 2;
+            Position.First = Game.Size.Item2 / 2 - 3;
+            Position.Second = Game.Size.Item1 / 2 - 3;
             Velocity.First = 0;
             Velocity.Second = 0;
         }

@@ -54,7 +54,7 @@ namespace HexBall
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
             var player1 = new Player(new Pair(10, 10), 1, 20, Color.FromRgb(255, 0, 0));
-            var ball = new Ball(new Pair(Size.Item2 / 2, Size.Item1 / 2), 3, 10);
+            var ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
             Entities.Add(ball);
             Entities.Add(player1);
         }
