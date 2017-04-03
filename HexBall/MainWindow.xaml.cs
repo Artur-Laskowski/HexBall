@@ -20,7 +20,7 @@ namespace HexBall
         public MainWindow()
         {
             InitializeComponent();
-            
+
             _game = new Game();
 
             var dispatcherTimer = new DispatcherTimer();
@@ -31,6 +31,11 @@ namespace HexBall
             _shapes = new List<Ellipse>();
 
             _attributes = new List<Tuple<Pair, Color, int>>();
+
+            //canvas1.Background = new ImageBrush()
+            //{
+            //    ImageSource = new System.Windows.Media.Imaging.BitmapImage((new Uri("http://www.textures.com/system/gallery/photos/Nature/Grass/50182/Grass0130_1_270.jpg", UriKind.Absolute)))
+            //};
 
             //We create 5 ellipses (4 players and 1 ball).
             //Unused ones have 0 size so are not visible.
@@ -63,8 +68,8 @@ namespace HexBall
 
                 canvas1.Children.Add(myEllipse);
             }
-            
-            var brush = new SolidColorBrush { Color = Color.FromArgb(128, 128, 128, 0) };
+
+            var brush = new SolidColorBrush { Color = Color.FromArgb(128, 24, 74, 30) };
 
             var zoneA = new Rectangle
             {

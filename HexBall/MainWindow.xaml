@@ -8,7 +8,11 @@
         Title="MainWindow" Height="552.8" Width="988.079" SizeToContent="WidthAndHeight">
     <Grid Margin="0,0,3.6,100.2">
         <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="843,10,0,0" VerticalAlignment="Top" Width="65"/>
-        <Canvas x:Name="canvas1" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="800"/>
+            <Canvas x:Name="canvas1" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="800">
+                <Canvas.Background>
+                    <ImageBrush ImageSource="Content/grassTexture.jpg" />
+                </Canvas.Background>
+            </Canvas>
         <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="843,74,0,0" VerticalAlignment="Top"/>
         <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="843,130,0,0" VerticalAlignment="Top"/>
 
