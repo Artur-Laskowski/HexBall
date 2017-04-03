@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexBall", "HexBall\HexBall.csproj", "{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{F9449F55-9CE8-44DD-B372-31B298C4968F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
