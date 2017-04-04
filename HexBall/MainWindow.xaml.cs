@@ -32,6 +32,23 @@ namespace HexBall
 
             _attributes = new List<Tuple<Pair, Color, int>>();
 
+           
+            //border of canvas
+            var borderRectangle = new Rectangle
+            {
+                Width = canvas1.Width,
+                Height = canvas1.Height,
+                StrokeThickness = 2
+            };
+            var borderSolidBrush = new SolidColorBrush { Color = Color.FromArgb(255, 20, 61, 25) };
+
+            borderRectangle.Stroke = borderSolidBrush;
+            borderRectangle.SetValue(Canvas.TopProperty, 0.0);  //starting point
+            borderRectangle.SetValue(Canvas.LeftProperty, 0.0);
+
+            canvas1.Children.Add(borderRectangle);
+
+
             //We create 5 ellipses (4 players and 1 ball).
             //Unused ones have 0 size so are not visible.
             //TODO do it dynamically?
