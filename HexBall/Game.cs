@@ -1,11 +1,23 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HexBall
 {
-    internal class Game
+    public class Game
     {
         public enum PlayerDir
         {
@@ -46,16 +58,41 @@ namespace HexBall
 
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2/2 - 50), new Pair(40, Size.Item2/2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2/2 - 50), new Pair(Size.Item1 - 0, Size.Item2/2 + 50));
-        
+
+
+        //network stuff
+        private Task dataReceiver;
+        private UdpClient myUdpClient;
+        private UdpClient myUdpClientA;
+        private int newPort;
+        private readonly int port = 13131;
+        private IPEndPoint remoteIPEndPointA;
+        private readonly string server = "89.79.77.122";
+        private CancellationTokenSource tokenSource2;
+        private int userID;
+        private bool isConnected;
+        BlockingCollection<byte[]> queue = new BlockingCollection<byte[]>();
+
+
 
         public Game()
         {
             Entities = new List<Entity>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
-            var player1 = new Player(new Pair(10, 10), 1, 20, Color.FromRgb(255, 0, 0));
+            var player1 = new Player(new Pair(10, 10), 1, 20);
             var ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
+            player1.EntityColor = Color.FromRgb(0,0,255);
             Entities.Add(ball);
+            Entities.Add(player1);
+            player1 = new Player(new Pair(40, 10), 1, 20);
+            player1.EntityColor = Color.FromRgb(0, 0, 255);
+            Entities.Add(player1);
+            player1 = new Player(new Pair(70, 10), 1, 20);
+            player1.EntityColor = Color.FromRgb(255, 0, 0);
+            Entities.Add(player1);
+            player1 = new Player(new Pair(100, 10), 1, 20);
+            player1.EntityColor = Color.FromRgb(255, 0, 0);
             Entities.Add(player1);
         }
 
@@ -144,12 +181,156 @@ namespace HexBall
 
             attributes.Clear();
 
+            //send movement data here
+
+            //Serializujemy pakiet z punktami
+            byte[] data = {(byte)PlayerDirection, (byte)userID};
+            if (isConnected)
+            {
+                try
+                {
+                    myUdpClientA.SendAsync(data, data.Length);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+
+                //check queue for updates received from the server, if found update objects with positions
+
+                if (queue.Count > 0)
+                {
+                    var dat = queue.Take();
+                    //deserializacja punktów
+                    IFormatter formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream(dat))
+                    {
+                        ServerAlt.Packet p = (ServerAlt.Packet)formatter.Deserialize(stream);
+
+                        //iterate over list in a packet and update positions
+                        for (int i = 0; i < p.positions.Length; i++)
+                        {
+                            Entities[i].Position.First = p.positions[i].First;
+                            Entities[i].Position.Second = p.positions[i].Second;
+
+                        }
+                    }
+                }
+
+            }
             //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
+            //            foreach (var e in Entities)
+            //            {
+            //                e.Update();
+            //                attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));
+            //            }
+
             foreach (var e in Entities)
             {
-                e.Update();
                 attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));
             }
+        }
+
+        public void Connect()
+        {
+            //Próba nawiązania połączenia z serwerem
+            myUdpClient = new UdpClient();
+            myUdpClient.Connect(server, port);
+            string msg = "Connect";
+            byte[] data = Encoding.ASCII.GetBytes(msg);
+
+            try
+            {
+                myUdpClient.SendAsync(data, data.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Any, 0);
+
+            //Czekamy na odpowiedź
+            try
+            {
+                data = myUdpClient.Receive(ref remoteIPEndPoint);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to connect to server!\n" + ex.Message);
+                return;
+            }
+
+            //odczytanie portu do rysowania oraz ID użytkownika
+            newPort = data[0] * byte.MaxValue + data[1];
+            userID = data[2];
+            Entities[userID + 1].EntityColor = Color.FromRgb(255,255,0);
+
+            //label.Content = "Online, ID: " + userID;
+
+            //nawiązanie połączenia na porcie rysowniczym
+            try
+            {
+                myUdpClientA = new UdpClient();
+                myUdpClientA.Connect(server, newPort);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+
+
+            tokenSource2 = new CancellationTokenSource();
+            CancellationToken ct = tokenSource2.Token;
+
+            dataReceiver = Task.Run(
+                () =>
+                {
+                    ct.ThrowIfCancellationRequested();
+
+                    while (true)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                        }
+
+                        byte[] dataA;
+
+                        //Czekamy na dane od serwera
+                        try
+                        {
+                            Console.WriteLine(IPAddress.Any.ToString());
+                            remoteIPEndPointA = new IPEndPoint(IPAddress.Broadcast, newPort);
+                            dataA = myUdpClientA.Receive(ref remoteIPEndPointA);
+                        }
+                        catch (Exception ex)
+                        {
+                            //MessageBox.Show(ex.Message);
+                            return;
+                        }
+
+                        Packet p;
+
+                        //odczytujemy ID użytkownika
+                        byte receivedUserID = dataA[dataA.Length - 4];
+
+
+
+                        //przepisujemy dane punktów do deserializacji
+                        byte[] packetBytes = new byte[dataA.Length - 4];
+                        Array.Copy(dataA, packetBytes, dataA.Length - 4);
+
+                        queue.Add(dataA);
+                    }
+                }, tokenSource2.Token);
+
+            isConnected = true;
+            //button1.IsEnabled = false;
+            //button2.IsEnabled = true;
+
         }
     }
 }

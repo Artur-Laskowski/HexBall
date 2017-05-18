@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Windows.Media;
 
 namespace HexBall
 {
     /// <summary>
     ///     Base class for handing collision, velocity, position, etc.
     /// </summary>
-    public class Entity
+    internal class Entity
     {
         /// <summary>
         ///     Entity color. Assigned on creation
         /// </summary>
-        public Color EntityColor;
+        public int[] EntityColor;
 
         public int Margin = 0;
 
@@ -20,7 +19,7 @@ namespace HexBall
             Position = new Pair(10, 10);
             MaxVelocity = 10;
             Size = 10;
-            EntityColor = Color.FromRgb(128, 128, 128);
+            EntityColor = new[] {255, 255, 255};
         }
 
         /// <summary>

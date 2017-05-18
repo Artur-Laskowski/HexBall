@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Windows.Media;
 
 namespace HexBall
 {
-    public class Player : Entity
+    internal class Player : Entity
     {
         /// <summary>
         ///     Standard constructor.
@@ -12,9 +11,9 @@ namespace HexBall
         /// <param name="maxSpeed"></param>
         /// <param name="size"></param>
         /// <param name="color"></param>
-        public Player(Pair position, double maxSpeed, int size) : base(position, maxSpeed, size)
+        public Player(Pair position, double maxSpeed, int size, int[] color) : base(position, maxSpeed, size)
         {
-            EntityColor = Color.FromRgb(123,123,69);
+            EntityColor = color;
         }
 
         protected override void UpdateVelocity()

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HexBall
+namespace ServerAlt
 {
     [Serializable]
     public class Pair

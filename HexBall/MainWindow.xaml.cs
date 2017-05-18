@@ -1,6 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -109,6 +117,11 @@ namespace HexBall
                 scoreLabelA.Content = "Team A: " + Game.ScoreA;
                 scoreLabelB.Content = "Team B: " + Game.ScoreB;
             }
+        }
+
+        private void button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _game.Connect();
         }
     }
 }

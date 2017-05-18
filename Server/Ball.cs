@@ -1,12 +1,10 @@
-﻿using System.Windows.Media;
-
-namespace HexBall
+﻿namespace HexBall
 {
-    public class Ball : Entity
+    internal class Ball : Entity
     {
         public Ball(Pair position, double maxSpeed, int size) : base(position, maxSpeed, size)
         {
-            EntityColor = Color.FromRgb(255, 255, 255);
+            EntityColor = new[] {255, 255, 255};
             Margin = 20;
         }
 
