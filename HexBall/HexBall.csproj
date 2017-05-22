@@ -74,6 +74,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packet.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -102,7 +103,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\grassTexture.jpg" />
+    <ProjectReference Include="..\ServerAlt\ServerAlt.csproj">
+      <Project>{e7763e0f-1335-4093-99ea-4b570cc2093a}</Project>
+      <Name>ServerAlt</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

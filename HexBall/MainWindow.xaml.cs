@@ -1,6 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -101,6 +109,9 @@ namespace HexBall
                 shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
 
                 var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
+                if (attribute.Item2.G == 1)
+                    shape.Stroke = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
                 shape.Fill = mySolidColorBrush;
 
                 shape.Width = attribute.Item3;
@@ -109,6 +120,12 @@ namespace HexBall
                 scoreLabelA.Content = "Team A: " + Game.ScoreA;
                 scoreLabelB.Content = "Team B: " + Game.ScoreB;
             }
+        }
+
+        private void button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Game.server = textBox1.Text;
+            _game.Connect();
         }
     }
 }

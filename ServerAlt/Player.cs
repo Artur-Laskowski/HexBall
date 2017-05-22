@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows.Media;
-
-namespace HexBall
+namespace ServerAlt
 {
     public class Player : Entity
     {
@@ -14,7 +12,6 @@ namespace HexBall
         /// <param name="color"></param>
         public Player(Pair position, double maxSpeed, int size) : base(position, maxSpeed, size)
         {
-            EntityColor = Color.FromRgb(123,123,69);
         }
 
         protected override void UpdateVelocity()

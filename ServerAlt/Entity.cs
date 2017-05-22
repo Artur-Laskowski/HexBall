@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Windows.Media;
 
-namespace HexBall
+namespace ServerAlt
 {
     /// <summary>
     ///     Base class for handing collision, velocity, position, etc.
@@ -11,7 +10,6 @@ namespace HexBall
         /// <summary>
         ///     Entity color. Assigned on creation
         /// </summary>
-        public Color EntityColor;
 
         public int Margin = 0;
 
@@ -20,7 +18,6 @@ namespace HexBall
             Position = new Pair(10, 10);
             MaxVelocity = 10;
             Size = 10;
-            EntityColor = Color.FromRgb(128, 128, 128);
         }
 
         /// <summary>
