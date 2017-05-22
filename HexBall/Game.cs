@@ -80,16 +80,16 @@ namespace HexBall
             Entities = new List<Entity>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
-            var player1 = new Player(new Pair(10, 10), 1, 20);
+            var player1 = new Player(new Pair(20, 330), 1, 20);
             var ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
             player1.EntityColor = Color.FromRgb(0,0,255);
             Entities.Add(ball);
             Entities.Add(player1);
-            player1 = new Player(new Pair(40, 10), 1, 20) {EntityColor = Color.FromRgb(0, 0, 255)};
+            player1 = new Player(new Pair(20, 370), 1, 20) {EntityColor = Color.FromRgb(0, 0, 255)};
             Entities.Add(player1);
-            player1 = new Player(new Pair(70, 10), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
+            player1 = new Player(new Pair(20, 410), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
             Entities.Add(player1);
-            player1 = new Player(new Pair(100, 10), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
+            player1 = new Player(new Pair(20, 450), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
             Entities.Add(player1);
         }
 
@@ -258,7 +258,10 @@ namespace HexBall
             //read user ID and port number used to communicate actual game info
             newPort = data[0] * byte.MaxValue + data[1];
             userID = data[2];
-            Entities[userID + 1].EntityColor = Color.FromRgb(255,255,0);
+            if (Entities[userID + 1].EntityColor.B == 255)
+                Entities[userID + 1].EntityColor = Color.FromRgb(0,1,255);
+            else
+                Entities[userID + 1].EntityColor = Color.FromRgb(255, 1, 0);
 
             //label.Content = "Online, ID: " + userID;
 

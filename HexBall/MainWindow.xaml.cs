@@ -109,6 +109,9 @@ namespace HexBall
                 shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
 
                 var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
+                if (attribute.Item2.G == 1)
+                    shape.Stroke = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
                 shape.Fill = mySolidColorBrush;
 
                 shape.Width = attribute.Item3;

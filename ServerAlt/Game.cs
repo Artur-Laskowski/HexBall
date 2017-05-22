@@ -77,15 +77,15 @@ namespace ServerAlt
             Entities = new List<Entity>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
-            var player1 = new Player(new Pair(10, 10), 1, 20);
+            var player1 = new Player(new Pair(20, 330), 1, 20);
             var ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
             Entities.Add(ball);
             Entities.Add(player1);
-            player1 = new Player(new Pair(40, 10), 1, 20);
+            player1 = new Player(new Pair(20, 370), 1, 20);
             Entities.Add(player1);
-            player1 = new Player(new Pair(70, 10), 1, 20);
+            player1 = new Player(new Pair(20, 410), 1, 20);
             Entities.Add(player1);
-            player1 = new Player(new Pair(100, 10), 1, 20);
+            player1 = new Player(new Pair(20, 450), 1, 20);
             Entities.Add(player1);
         }
 
