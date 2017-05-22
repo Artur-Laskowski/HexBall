@@ -16,6 +16,8 @@
         <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="843,99,0,0" VerticalAlignment="Top"/>
         <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="843,130,0,0" VerticalAlignment="Top"/>
         <Label Content="Score" HorizontalAlignment="Left" Margin="843,73,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="843,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label Content="ip" HorizontalAlignment="Left" Margin="820,35,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

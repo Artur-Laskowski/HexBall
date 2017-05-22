@@ -67,7 +67,7 @@ namespace HexBall
         private int newPort;
         private readonly int port = 13131;
         private IPEndPoint remoteIPEndPointA;
-        private readonly string server = "localhost";
+        public static string server = "";
         private CancellationTokenSource tokenSource2;
         private int userID;
         private bool isConnected;
