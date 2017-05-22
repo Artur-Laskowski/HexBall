@@ -15,9 +15,7 @@
         </Canvas>
         <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="843,99,0,0" VerticalAlignment="Top"/>
         <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="843,130,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="button2" Content="Disconnect" HorizontalAlignment="Left" Margin="843,34,0,0" VerticalAlignment="Top" Width="65" Height="20"/>
         <Label Content="Score" HorizontalAlignment="Left" Margin="843,73,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="843,362,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

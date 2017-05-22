@@ -67,7 +67,7 @@ namespace HexBall
         private int newPort;
         private readonly int port = 13131;
         private IPEndPoint remoteIPEndPointA;
-        private readonly string server = "89.79.77.122";
+        private readonly string server = "localhost";
         private CancellationTokenSource tokenSource2;
         private int userID;
         private bool isConnected;
@@ -85,14 +85,11 @@ namespace HexBall
             player1.EntityColor = Color.FromRgb(0,0,255);
             Entities.Add(ball);
             Entities.Add(player1);
-            player1 = new Player(new Pair(40, 10), 1, 20);
-            player1.EntityColor = Color.FromRgb(0, 0, 255);
+            player1 = new Player(new Pair(40, 10), 1, 20) {EntityColor = Color.FromRgb(0, 0, 255)};
             Entities.Add(player1);
-            player1 = new Player(new Pair(70, 10), 1, 20);
-            player1.EntityColor = Color.FromRgb(255, 0, 0);
+            player1 = new Player(new Pair(70, 10), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
             Entities.Add(player1);
-            player1 = new Player(new Pair(100, 10), 1, 20);
-            player1.EntityColor = Color.FromRgb(255, 0, 0);
+            player1 = new Player(new Pair(100, 10), 1, 20) {EntityColor = Color.FromRgb(255, 0, 0)};
             Entities.Add(player1);
         }
 
@@ -207,7 +204,8 @@ namespace HexBall
                     using (MemoryStream stream = new MemoryStream(dat))
                     {
                         ServerAlt.Packet p = (ServerAlt.Packet)formatter.Deserialize(stream);
-
+                        ScoreA = p.scoreA;
+                        ScoreB = p.scoreB;
                         //iterate over list in a packet and update positions
                         for (int i = 0; i < p.positions.Length; i++)
                         {
@@ -219,12 +217,6 @@ namespace HexBall
                 }
 
             }
-            //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
-            //            foreach (var e in Entities)
-            //            {
-            //                e.Update();
-            //                attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));
-            //            }
 
             foreach (var e in Entities)
             {
@@ -234,7 +226,7 @@ namespace HexBall
 
         public void Connect()
         {
-            //Próba nawiązania połączenia z serwerem
+            //Attempt to connect with the server
             myUdpClient = new UdpClient();
             myUdpClient.Connect(server, port);
             string msg = "Connect";
@@ -251,7 +243,7 @@ namespace HexBall
             }
             IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
-            //Czekamy na odpowiedź
+            //Await response
             try
             {
                 data = myUdpClient.Receive(ref remoteIPEndPoint);
@@ -263,13 +255,14 @@ namespace HexBall
             }
 
             //odczytanie portu do rysowania oraz ID użytkownika
+            //read user ID and port number used to communicate actual game info
             newPort = data[0] * byte.MaxValue + data[1];
             userID = data[2];
             Entities[userID + 1].EntityColor = Color.FromRgb(255,255,0);
 
             //label.Content = "Online, ID: " + userID;
 
-            //nawiązanie połączenia na porcie rysowniczym
+            //Attempt connection on a new port
             try
             {
                 myUdpClientA = new UdpClient();
@@ -299,7 +292,7 @@ namespace HexBall
 
                         byte[] dataA;
 
-                        //Czekamy na dane od serwera
+                        //Await data from the server
                         try
                         {
                             Console.WriteLine(IPAddress.Any.ToString());
@@ -314,16 +307,16 @@ namespace HexBall
 
                         Packet p;
 
-                        //odczytujemy ID użytkownika
+                        //read user ID
                         byte receivedUserID = dataA[dataA.Length - 4];
 
 
 
-                        //przepisujemy dane punktów do deserializacji
+                        //packet with all user positions
                         byte[] packetBytes = new byte[dataA.Length - 4];
                         Array.Copy(dataA, packetBytes, dataA.Length - 4);
 
-                        queue.Add(dataA);
+                        queue.Add(dataA, ct);
                     }
                 }, tokenSource2.Token);
 

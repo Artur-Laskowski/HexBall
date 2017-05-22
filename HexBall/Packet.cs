@@ -12,6 +12,8 @@ namespace HexBall
         //packet with an array of positions of 5 objects
         //0-ball, 1-2 blu 3-4 red
         public Pair[] positions;
+        public int scoreA;
+        public int scoreB;
 
         public Packet()
         {

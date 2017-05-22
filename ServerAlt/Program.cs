@@ -9,6 +9,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace ServerAlt
 {
@@ -36,15 +37,15 @@ namespace ServerAlt
             }
 
 
-            //IP klientów oraz ich ID
+            //User IPs and IDs
             Dictionary<IPEndPoint, byte[]> clients = new Dictionary<IPEndPoint, byte[]>();
 
-            //kolejka danych (domyślny typ struktury)
+            //queue with movement data
             BlockingCollection<byte[]> queue = new BlockingCollection<byte[]>();
 
             //BlockingCollection<Dictionary<IPEndPoint, byte[]>> clients = new BlockingCollection<Dictionary<IPEndPoint, byte[]>>();
 
-            //Wątek odbierający dane rysownicze
+            //Thread reading movement data from the players
             Task dataReceiver = Task.Run(
                 () =>
                 {
@@ -91,6 +92,8 @@ namespace ServerAlt
                         {
                             packet.positions[i] = Game.Entities[i].Position;
                         }
+                        packet.scoreA = Game.ScoreA;
+                        packet.scoreB = Game.ScoreB;
                         byte[] data;
                         BinaryFormatter bf = new BinaryFormatter();
                         using (var ms = new MemoryStream())
