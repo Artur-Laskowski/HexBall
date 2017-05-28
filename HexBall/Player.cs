@@ -58,7 +58,6 @@ namespace HexBall
                     break;
             }
             AddVelocity(velocity);
-            this.playerAction = PlayerDir.Up;
         }
 
         public override void Collide(Entity collider)

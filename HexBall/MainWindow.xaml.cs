@@ -38,12 +38,14 @@ namespace HexBall
             _game.UpdateCanvas();
         }
 
+
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var w = e.Key == Key.D;
-            var a = e.Key == Key.W;
-            var s = e.Key == Key.A;
-            var d = e.Key == Key.S;
+            
+            var w = Keyboard.IsKeyDown(Key.D);
+            var a = Keyboard.IsKeyDown(Key.W);
+            var s = Keyboard.IsKeyDown(Key.A);
+            var d = Keyboard.IsKeyDown(Key.S);
             //var space = Keyboard.IsKeyDown(Key.Space);
             var playerMovement = PlayerDir.NoMove;
             if (w)
@@ -72,6 +74,11 @@ namespace HexBall
                     playerMovement = PlayerDir.Right;
             }
             _game.UpdatePlayerMovement(playerMovement, 0);
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            this.Window_KeyDown(null, null);
         }
     }
 }
