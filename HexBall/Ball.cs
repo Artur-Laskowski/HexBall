@@ -20,7 +20,7 @@ namespace HexBall
 
             if (result == 0)
             {
-                this.game.ScoreA++;
+                this.game.ScoreA ++;
             }
             if (result == 1)
             {
