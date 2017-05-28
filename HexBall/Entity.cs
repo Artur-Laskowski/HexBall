@@ -8,10 +8,14 @@ namespace HexBall
     /// </summary>
     internal class Entity
     {
+
+
         /// <summary>
         ///     Entity color. Assigned on creation
         /// </summary>
         public Color EntityColor;
+
+        public Game game;
 
         public int Margin = 0;
 
@@ -138,32 +142,47 @@ namespace HexBall
         {
             var proposedPos = new Pair
             {
-                First = Position.First + Velocity.First * Game.TimeDelta,
-                Second = Position.Second + Velocity.Second * Game.TimeDelta
+                First = Position.First + Velocity.First * this.game.TimeDelta,
+                Second = Position.Second + Velocity.Second * this.game.TimeDelta
             };
-            if (Game.IsInBounds(proposedPos, Margin))
+            if (this.game.IsInBounds(proposedPos, Margin))
                 //TODO: additional checks(collision,etc), if fails, set velocity to 0
             {
                 var flag = false;
-                foreach (var e in Game.Entities)
+
+                //player collision
+                foreach (var e in this.game.players)
+                {
+                    if (e == this)
+                        continue;
                     if (Pair.Distance(e.Position, Position) < (double)(e.Size + Size) / 2)
                     {
                         Collide(e);
                         flag = true;
                     }
+                }
+                    
+
+                //ball collision
+                if (Pair.Distance(this.game.ball.Position, Position) < (double)(this.game.ball.Size + Size) / 2)
+                {
+                    Collide(this.game.ball);
+                    flag = true;
+                }
+
                 if (!flag)
                 {
-                    proposedPos.First = Position.First + Velocity.First * Game.TimeDelta;
-                    proposedPos.Second = Position.Second + Velocity.Second * Game.TimeDelta;
+                    proposedPos.First = Position.First + Velocity.First * this.game.TimeDelta;
+                    proposedPos.Second = Position.Second + Velocity.Second * this.game.TimeDelta;
                 }
-                if (Game.IsInBounds(proposedPos, Margin))
+                if (this.game.IsInBounds(proposedPos, Margin))
                 {
                     Position = proposedPos;
                 }
                 else
                 {
-                    proposedPos.First = Position.First - Velocity.First * Game.TimeDelta;
-                    proposedPos.Second = Position.Second - Velocity.Second * Game.TimeDelta;
+                    proposedPos.First = Position.First - Velocity.First * this.game.TimeDelta;
+                    proposedPos.Second = Position.Second - Velocity.Second * this.game.TimeDelta;
                     Position = proposedPos;
                 }
             }

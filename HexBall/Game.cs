@@ -1,34 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace HexBall
 {
+
+    public enum PlayerDir
+    {
+        NoMove,
+        Up,
+        RightUp,
+        Right,
+        RightDown,
+        Down,
+        LeftDown,
+        Left,
+        LeftUp,
+        Shoot
+    }
+
     internal class Game
     {
-        public enum PlayerDir
-        {
-            NoMove,
-            Up,
-            RightUp,
-            Right,
-            RightDown,
-            Down,
-            LeftDown,
-            Left,
-            LeftUp
-        }
 
+        public Canvas canv;
         /// <summary>
         ///     Player movement speed. TODO change it based on some conditions?
         /// </summary>
-        public const double MovementSpeed = 0.2;
+        public readonly double MovementSpeed = 0.2;
 
         /// <summary>
         ///     Time between updates
         /// </summary>
-        public const double TimeDelta = 0.04;
+        public readonly double TimeDelta = 0.04;
         
 
         /// <summary>
@@ -39,48 +46,132 @@ namespace HexBall
         /// <summary>
         ///     List of all entities. TODO make it static so it can be easily accessed by entites when colliding?
         /// </summary>
-        public static List<Entity> Entities;
+        public Ball ball;
+        public List<Player> players;
 
-        public static int ScoreA = 0;
-        public static int ScoreB = 0;
+        public int ScoreA = 0;
+        public int ScoreB = 0;
 
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2/2 - 50), new Pair(40, Size.Item2/2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2/2 - 50), new Pair(Size.Item1 - 0, Size.Item2/2 + 50));
-        
 
-        public Game()
+        private List<Tuple<Pair, Color, int>> _attributes;
+        private List<Ellipse> _shapes;
+
+        public Game(Canvas c)
         {
-            Entities = new List<Entity>();
+            this.canv = c;
+            players = new List<Player>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
             var player1 = new Player(new Pair(10, 10), 1, 20, Color.FromRgb(255, 0, 0));
-            var ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
-            Entities.Add(ball);
-            Entities.Add(player1);
+            player1.game = this;
+            ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
+            players.Add(player1);
         }
 
-        /// <summary>
-        ///     Player's movement direction. Retrieved by player object and used to change velocity.
-        /// </summary>
-        public static PlayerDir PlayerDirection { get; set; }
+        public void InitCanvas()
+        {
+            _shapes = new List<Ellipse>();
 
+            _attributes = new List<Tuple<Pair, Color, int>>();
+
+            //We create 5 ellipses (4 players and 1 ball).
+            //Unused ones have 0 size so are not visible.
+            //TODO do it dynamically?
+            //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
+            //If we need them, we change their size and color.
+            for (var i = 0; i < 5; i++)
+            {
+                var myEllipse = new Ellipse();
+
+                // Create a SolidColorBrush with a red color to fill the 
+                // Ellipse with.
+                var mySolidColorBrush = new SolidColorBrush { Color = Color.FromArgb(255, 255, 255, 0) };
+
+                // Describes the brush's color using RGB values. 
+                // Each value has a range of 0-255.
+                myEllipse.Fill = mySolidColorBrush;
+                myEllipse.StrokeThickness = 2;
+                myEllipse.Stroke = Brushes.Black;
+
+                // Set the width and height of the Ellipse.
+                myEllipse.Width = 0;
+                myEllipse.Height = 0; //All 5 possible objects
+
+                //myEllipse.SetValue(Canvas.TopProperty, 10);
+                //myEllipse.SetValue(Canvas.LeftProperty, 10);
+
+                _shapes.Add(myEllipse);
+
+                canv.Children.Add(myEllipse);
+            }
+
+            var brush = new SolidColorBrush { Color = Color.FromArgb(200, 200, 200, 0) };
+
+            var zoneA = new Rectangle
+            {
+                Fill = brush,
+                Width = Math.Abs(Game.ZoneA.Item1.First - Game.ZoneA.Item2.First),
+                Height = Math.Abs(Game.ZoneA.Item1.Second - Game.ZoneA.Item2.Second)
+            };
+            canv.Children.Add(zoneA);
+            zoneA.SetValue(Canvas.TopProperty, Game.ZoneA.Item1.Second);
+            zoneA.SetValue(Canvas.LeftProperty, Game.ZoneA.Item1.First);
+
+            var zoneB = new Rectangle
+            {
+                Fill = brush,
+                Width = Math.Abs(Game.ZoneB.Item1.First - Game.ZoneB.Item2.First),
+                Height = Math.Abs(Game.ZoneB.Item1.Second - Game.ZoneB.Item2.Second)
+            };
+            canv.Children.Add(zoneB);
+            zoneB.SetValue(Canvas.TopProperty, Game.ZoneB.Item1.Second);
+            zoneB.SetValue(Canvas.LeftProperty, Game.ZoneB.Item1.First);
+        }
+
+        public void UpdateCanvas()
+        {
+            this.Update(out _attributes);
+
+            for (var i = 0; i < _attributes.Count; i++)
+            {
+                var shape = _shapes.ElementAt(i);
+                var attribute = _attributes.ElementAt(i);
+
+                shape.SetValue(Canvas.TopProperty, attribute.Item1.First);
+                shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
+                
+                var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
+                shape.Fill = mySolidColorBrush;
+
+                shape.Width = attribute.Item3;
+                shape.Height = attribute.Item3;
+            }
+        }
+
+        public void UpdatePlayerMovement(PlayerDir mov, int playerIndex)
+        {
+            this.players[playerIndex].playerAction = mov;
+        }
+        
         /// <summary>
         ///     Checks whether position is valid.
         /// </summary>
         /// <param name="a"></param>
         /// <returns>bool - is in bounds</returns>
-        public static bool IsInBounds(Pair a)
+        public bool IsInBounds(Pair a)
         {
             return a.First >= 0 && a.First <= Size.Item1 && a.Second >= 0 && a.Second <= Size.Item2;
         }
 
-        public static bool IsInBounds(Pair a, int margin)
+        public bool IsInBounds(Pair a, int margin)
         {
             return a.First >= margin && a.First <= Size.Item2 - margin && a.Second >= margin &&
                    a.Second <= Size.Item1 - margin;
         }
 
-        public static int HasScored(Pair a)
+        public int HasScored(Pair a)
         {
             if (a.First > ZoneA.Item1.Second && a.First < ZoneA.Item2.Second && a.Second > ZoneA.Item1.First &&
                 a.Second < ZoneA.Item2.First)
@@ -108,44 +199,10 @@ namespace HexBall
         public void Update(out List<Tuple<Pair, Color, int>> attributes)
         {
             attributes = new List<Tuple<Pair, Color, int>>();
-
-            //TODO see if this can be done more pretty
-            var w = Keyboard.IsKeyDown(Key.D);
-            var a = Keyboard.IsKeyDown(Key.W);
-            var s = Keyboard.IsKeyDown(Key.A);
-            var d = Keyboard.IsKeyDown(Key.S);
-            //var space = Keyboard.IsKeyDown(Key.Space);
-            PlayerDirection = PlayerDir.NoMove;
-            if (w)
-            {
-                if (a)
-                    PlayerDirection = PlayerDir.LeftUp;
-                if (d)
-                    PlayerDirection = PlayerDir.RightUp;
-                if (!a && !d)
-                    PlayerDirection = PlayerDir.Up;
-            }
-            if (s)
-            {
-                if (a)
-                    PlayerDirection = PlayerDir.LeftDown;
-                if (d)
-                    PlayerDirection = PlayerDir.RightDown;
-                if (!a && !d)
-                    PlayerDirection = PlayerDir.Down;
-            }
-            if (!w && !s)
-            {
-                if (a)
-                    PlayerDirection = PlayerDir.Left;
-                if (d)
-                    PlayerDirection = PlayerDir.Right;
-            }
-
-            attributes.Clear();
-
+           
             //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
-            foreach (var e in Entities)
+            attributes.Clear();
+            foreach (var e in players)
             {
                 e.Update();
                 attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));

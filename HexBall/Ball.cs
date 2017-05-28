@@ -13,18 +13,18 @@ namespace HexBall
         protected override void UpdatePosition()
         {
             base.UpdatePosition();
-            var result = Game.HasScored(Position);
+            var result = this.game.HasScored(Position);
             if (result == -1)
                 return;
 
 
             if (result == 0)
             {
-                Game.ScoreA++;
+                this.game.ScoreA++;
             }
             if (result == 1)
             {
-                Game.ScoreB++;
+                this.game.ScoreB++;
             }
             Position.First = Game.Size.Item2 / 2 - 3;
             Position.Second = Game.Size.Item1 / 2 - 3;

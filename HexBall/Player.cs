@@ -5,6 +5,9 @@ namespace HexBall
 {
     internal class Player : Entity
     {
+
+        public PlayerDir playerAction;
+
         /// <summary>
         ///     Standard constructor.
         /// </summary>
@@ -20,41 +23,42 @@ namespace HexBall
         protected override void UpdateVelocity()
         {
             base.UpdateVelocity();
-            if (Game.PlayerDirection == Game.PlayerDir.NoMove) return;
+            if (this.playerAction == PlayerDir.NoMove) return;
             var velocity = new Pair();
-            switch (Game.PlayerDirection)
+            switch (this.playerAction)
             {
-                case Game.PlayerDir.Up:
-                    velocity.Set(0, Game.MovementSpeed);
+                case PlayerDir.Up:
+                    velocity.Set(0, this.game.MovementSpeed);
                     break;
-                case Game.PlayerDir.RightUp:
-                    velocity.Set(Game.MovementSpeed / Math.Sqrt(2), Game.MovementSpeed / Math.Sqrt(2));
+                case PlayerDir.RightUp:
+                    velocity.Set(this.game.MovementSpeed / Math.Sqrt(2), this.game.MovementSpeed / Math.Sqrt(2));
                     break;
-                case Game.PlayerDir.Right:
-                    velocity.Set(Game.MovementSpeed, 0);
+                case PlayerDir.Right:
+                    velocity.Set(this.game.MovementSpeed, 0);
                     break;
-                case Game.PlayerDir.RightDown:
-                    velocity.Set(Game.MovementSpeed / Math.Sqrt(2), -Game.MovementSpeed / Math.Sqrt(2));
+                case PlayerDir.RightDown:
+                    velocity.Set(this.game.MovementSpeed / Math.Sqrt(2), -this.game.MovementSpeed / Math.Sqrt(2));
                     break;
-                case Game.PlayerDir.Down:
-                    velocity.Set(0, -Game.MovementSpeed);
+                case PlayerDir.Down:
+                    velocity.Set(0, -this.game.MovementSpeed);
                     break;
-                case Game.PlayerDir.LeftDown:
-                    velocity.Set(-Game.MovementSpeed / Math.Sqrt(2), -Game.MovementSpeed / Math.Sqrt(2));
+                case PlayerDir.LeftDown:
+                    velocity.Set(-this.game.MovementSpeed / Math.Sqrt(2), -this.game.MovementSpeed / Math.Sqrt(2));
                     break;
-                case Game.PlayerDir.Left:
-                    velocity.Set(-Game.MovementSpeed, 0);
+                case PlayerDir.Left:
+                    velocity.Set(-this.game.MovementSpeed, 0);
                     break;
-                case Game.PlayerDir.LeftUp:
-                    velocity.Set(-Game.MovementSpeed / Math.Sqrt(2), Game.MovementSpeed / Math.Sqrt(2));
+                case PlayerDir.LeftUp:
+                    velocity.Set(-this.game.MovementSpeed / Math.Sqrt(2), this.game.MovementSpeed / Math.Sqrt(2));
                     break;
-                case Game.PlayerDir.NoMove:
+                case PlayerDir.NoMove:
                     break;
                 default:
                     velocity.Set(0, 0);
                     break;
             }
             AddVelocity(velocity);
+            this.playerAction = PlayerDir.Up;
         }
 
         public override void Collide(Entity collider)
