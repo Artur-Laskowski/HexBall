@@ -36,7 +36,7 @@ namespace HexBall
         ///     Time between updates
         /// </summary>
         public readonly double TimeDelta = 0.04;
-        
+
 
         /// <summary>
         ///     Playing field's size.
@@ -52,8 +52,8 @@ namespace HexBall
         public int ScoreA = 0;
         public int ScoreB = 0;
 
-        public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2/2 - 50), new Pair(40, Size.Item2/2 + 50));
-        public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2/2 - 50), new Pair(Size.Item1 - 0, Size.Item2/2 + 50));
+        public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
+        public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
 
         private List<Tuple<Pair, Color, int>> _attributes;
         private List<Ellipse> _shapes;
@@ -64,10 +64,28 @@ namespace HexBall
             players = new List<Player>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
-            var player1 = new Player(new Pair(10, 10), 1, 20, Color.FromRgb(255, 0, 0));
-            player1.game = this;
-            ball = new Ball(new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3), 3, 10);
-            players.Add(player1);
+
+            var position = new Pair(10, 10);
+            AddPlayer(position);
+
+            AddBall();
+        }
+
+        private void AddBall()
+        {
+            var boardCenter = GetCenterOfBoard();
+            ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
+        }
+
+        private void AddPlayer(Pair position)
+        {
+            var player = new Player(position, Player.MaxSpeed, Player.Dimension, Colour.Red) { game = this };
+            players.Add(player);
+        }
+
+        private Pair GetCenterOfBoard()
+        {
+            return new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3);
         }
 
         public void InitCanvas()
@@ -141,7 +159,7 @@ namespace HexBall
 
                 shape.SetValue(Canvas.TopProperty, attribute.Item1.First);
                 shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
-                
+
                 var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
                 shape.Fill = mySolidColorBrush;
 
@@ -154,7 +172,7 @@ namespace HexBall
         {
             this.players[playerIndex].playerAction = mov;
         }
-        
+
         /// <summary>
         ///     Checks whether position is valid.
         /// </summary>
@@ -199,7 +217,7 @@ namespace HexBall
         public void Update(out List<Tuple<Pair, Color, int>> attributes)
         {
             attributes = new List<Tuple<Pair, Color, int>>();
-           
+
             //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
             attributes.Clear();
             foreach (var e in players)
