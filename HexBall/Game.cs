@@ -24,10 +24,10 @@ namespace HexBall
         Shoot
     }
 
-    internal class Game
+    public class Game
     {
 
-        public Canvas canv;
+        //public Canvas canv;
         /// <summary>
         ///     Player movement speed. TODO change it based on some conditions?
         /// </summary>
@@ -48,7 +48,7 @@ namespace HexBall
         ///     List of all entities. TODO make it static so it can be easily accessed by entites when colliding?
         /// </summary>
         public Ball Ball;
-        public List<Player> Players;
+        public Player[] Players;
 
         public int ScoreA = 0;
         public int ScoreB = 0;
@@ -56,98 +56,36 @@ namespace HexBall
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
 
-        private List<Tuple<Pair, Color, int>> _attributes;
-        private List<Ellipse> _shapes;
+        public List<Tuple<Pair, Color, int>> attributes { get; set; }
+        public List<Ellipse> shapes { get; set; }
 
-        public Game(Canvas c)
+        public Game()
         {
-            this.canv = c;
-            Players = new List<Player>();
-            //Placeholders. Naturally objects will be added dynamicly.
-            //TODO make it dynamic.
-
-            var position = new Pair(10, 10);
-            AddPlayer(position);
-
+            Players = new Player[4];
+            attributes = new List<Tuple<Pair, Color, int>>();
             AddBall();
         }
 
         private void AddBall()
         {
             var boardCenter = GetCenterOfBoard();
-            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension) { game = this };
+            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
         }
 
-        private void AddPlayer(Pair position)
+        private void AddPlayer()
         {
+            var position = new Pair(10, 10);
             var player = new Player(position, Player.MaxSpeed, Player.Dimension, Colour.Red) { game = this };
-            Players.Add(player);
+        }
+
+        private void RemovePlayer(int index)
+        {
+
         }
 
         private Pair GetCenterOfBoard()
         {
             return new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3);
-        }
-
-        public void InitCanvas()
-        {
-            _shapes = new List<Ellipse>();
-
-            _attributes = new List<Tuple<Pair, Color, int>>();
-
-            foreach (var player in Players)
-                AddEntityShape(player);
-
-            AddEntityShape(Ball);
-
-            AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
-            AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
-        }
-
-        private void AddGoalShape(Pair startPair, Pair endPair)
-        {
-            var brush = new SolidColorBrush { Color = Colour.YellowTransparent };
-            var goal = new Rectangle
-            {
-                Fill = brush,
-                Width = Math.Abs(startPair.First - endPair.First),
-                Height = Math.Abs(startPair.Second - endPair.Second)
-            };
-            canv.Children.Add(goal);
-            goal.SetValue(Canvas.TopProperty, startPair.Second);
-            goal.SetValue(Canvas.LeftProperty, startPair.First);
-        }
-
-        private void AddEntityShape(Entity entity)
-        {
-            var entityEllipse = new Ellipse
-            {
-                Stroke = Brushes.Black,
-                Fill = new SolidColorBrush(entity.EntityColor)
-            };
-
-            _shapes.Add(entityEllipse);
-            canv.Children.Add(entityEllipse);
-        }
-
-        public void UpdateCanvas()
-        {
-            this.Update(out _attributes);
-
-            for (var i = 0; i < _attributes.Count; i++)
-            {
-                var shape = _shapes.ElementAt(i);
-                var attribute = _attributes.ElementAt(i);
-
-                shape.SetValue(Canvas.TopProperty, attribute.Item1.First);
-                shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
-
-                var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
-                shape.Fill = mySolidColorBrush;
-
-                shape.Width = attribute.Item3;
-                shape.Height = attribute.Item3;
-            }
         }
 
         public void UpdatePlayerMovement(PlayerDir mov, int playerIndex)
@@ -171,21 +109,21 @@ namespace HexBall
                    a.Second <= Size.Item1 - margin;
         }
 
-        public Score HasScored(Pair a)
+        public int HasScored(Pair a)
         {
             if (a.First > ZoneA.Item1.Second && a.First < ZoneA.Item2.Second && a.Second > ZoneA.Item1.First &&
                 a.Second < ZoneA.Item2.First)
             {
-                return Score.ZoneAGoal;
+                return 0;
             }
 
             if (a.First > ZoneB.Item1.Second && a.First < ZoneB.Item2.Second && a.Second > ZoneB.Item1.First &&
                 a.Second < ZoneB.Item2.First)
             {
-                return Score.ZoneBGoal;
+                return 1;
             }
 
-            return Score.NoScore;
+            return -1;
         }
 
         /// <summary>
@@ -196,19 +134,16 @@ namespace HexBall
         ///     WARNING Currently entities and attributes are not linked, changing order of one of them will produce unwanted
         ///     behavior.
         /// </param>
-        public void Update(out List<Tuple<Pair, Color, int>> attributes)
+        public void Update()
         {
-            attributes = new List<Tuple<Pair, Color, int>>();
-
             //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
             attributes.Clear();
-            foreach (var e in Players)
+            foreach (var e in Players.Where(x=>x!=null))
             {
                 e.Update();
                 attributes.Add(e.GetPositionColorSize());
             }
             attributes.Add(Ball.GetPositionColorSize());
-            Ball.Update();
         }
     }
 }
