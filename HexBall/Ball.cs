@@ -15,19 +15,21 @@ namespace HexBall
         protected override void UpdatePosition()
         {
             base.UpdatePosition();
-            var result = this.game.HasScored(Position);
-            if (result == -1)
-                return;
-
-
-            if (result == 0)
+            var result = game.HasScored(Position);
+            switch (result)
             {
-                this.game.ScoreA ++;
+                case Score.NoScore:
+                    return;
+
+                case Score.ZoneAGoal:
+                    game.ScoreB++;
+                    break;
+
+                case Score.ZoneBGoal:
+                    game.ScoreA++;
+                    break;
             }
-            if (result == 1)
-            {
-                this.game.ScoreB++;
-            }
+
             Position.First = Game.Size.Item2 / 2 - 3;
             Position.Second = Game.Size.Item1 / 2 - 3;
             Velocity.First = 0;
