@@ -22,7 +22,7 @@ namespace Client
 
         private List<Tuple<Pair, Color, int>> attributes { get; set; }
 
-        private PlayerDir playerMovement;
+        public PlayerDir playerMovement;
 
         public ConnectionController(string ip, int port)
         {
@@ -42,7 +42,7 @@ namespace Client
         /// 
         /// </summary>
         /// <param name="get">true - odczytujemy attributes, false - zapisujemy</param>
-        public List<Tuple<Pair, Color, int>> GetSetAttributes(bool get=true, List<Tuple<Pair, Color, int>> newAttributes=null)
+        public List<Tuple<Pair, Color, int>> GetSetAttributes(bool get = true, List<Tuple<Pair, Color, int>> newAttributes = null)
         {
             //semafor
             lock (this.attributes)
@@ -70,9 +70,9 @@ namespace Client
                     case MessageType.Goal:
                         break;
                 }
-                
                 //wyslij movement
-                SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
+                if (playerMovement != PlayerDir.NoMove)
+                    SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
             }
         }
 

@@ -73,7 +73,7 @@ namespace Client
             var keyA = Keyboard.IsKeyDown(Key.A);
             var keyS = Keyboard.IsKeyDown(Key.S);
             //var space = Keyboard.IsKeyDown(Key.Space);
-            PlayerDir playerMovement;
+            PlayerDir playerMovement=PlayerDir.NoMove;
             if (keyD)
             {
                 if (keyW)
@@ -99,8 +99,7 @@ namespace Client
                 if (keyS)
                     playerMovement = PlayerDir.Right;
             }
-            //TODO wyslac ruch do serwera
-            ///_game.UpdatePlayerMovement(playerMovement, 0);
+            cc.playerMovement = playerMovement;
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
