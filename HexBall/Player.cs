@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace HexBall
 {
-    internal class Player : Entity
+    public class Player : Entity
     {
         public static double MaxSpeed = 1;
         public static int Dimension = 20;

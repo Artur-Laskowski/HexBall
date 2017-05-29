@@ -6,7 +6,7 @@ namespace HexBall
     /// <summary>
     ///     Base class for handing collision, velocity, position, etc.
     /// </summary>
-    internal class Entity
+    public class Entity
     {
 
 

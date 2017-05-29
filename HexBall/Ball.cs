@@ -2,7 +2,7 @@
 
 namespace HexBall
 {
-    internal class Ball : Entity
+    public class Ball : Entity
     {
         public static double MaxSpeed = 3;
         public static int Dimension = 10;

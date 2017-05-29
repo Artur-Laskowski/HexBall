@@ -7,46 +7,51 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HexBall;
+using System.Windows.Media;
 
 namespace Server
 {
-    public class ClientService
+    public class ClientService : IDisposable
     {
-        TcpClient clientSocket { get; set; }
-        int number { get; set; } //id?
+        private TcpClient socket;
+        private Game game;
+        private NetworkStream ns;
+        private byte[] bytesIn;
+        private byte[] bytesOut;
+        private const int bufferSize = 8192;
 
-        public ClientService(TcpClient inClientSocket, int nmbr)
+        private int clientId;
+        private int playerIndex;
+
+        public ClientService(TcpClient inClientSocket, int nmbr, Game g)
         {
-            this.clientSocket = inClientSocket;
-            this.number = nmbr;
-            //
-                // init player on game object
-            //
-            Thread clientThread = new Thread(ClientHandler);
-            clientThread.Start();
+            this.socket = inClientSocket;
+            this.clientId = nmbr;
+            this.game = g;
+
+            bytesIn = new byte[bufferSize];
+            bytesOut = new byte[bufferSize];
+
+            Thread connectionThread = new Thread(ConnectionHandler);
+            connectionThread.Start();
         }
 
-        public void ClientHandler()
+        private void ConnectionHandler()
         {
-            byte[] bytesIn = new byte[400096];
-            byte[] bytesOut = new byte[8192];
-            String zxc = "blasladlsadasdjaiosjdaoisjdsaodhsiudfasudfha";
+            ns = this.socket.GetStream();
+            this.SendPlayerIndex();
+
+            Message msg;
+
             while (true)
             {
                 try
                 {
-                    NetworkStream networkStream = this.clientSocket.GetStream();
-                    networkStream.Read(bytesIn, 0, (int)clientSocket.ReceiveBufferSize);
-                    //
-                    //deserialization
-                    //add event with this player id to game object
-                    //serialize map to byte array
-                    //send back to client
-                    //
-                    Serializer.ObjectToByteArray(zxc).CopyTo(bytesOut, 0);
-                    networkStream.Write(bytesOut, 0, bytesOut.Count());
-                    networkStream.Flush();
-                }catch(Exception e)
+                    this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = new List<Tuple<Pair, Color, int>>() });
+                    msg = this.ReceiveMessage();
+                }
+                catch(Exception e)
                 {
                     break;
                 }
@@ -54,6 +59,28 @@ namespace Server
             }
         }
 
-        
+        private void SendPlayerIndex()
+        {
+            this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = clientId });
+        }
+
+        private void SendMessage(Message msg)
+        {
+            Serializer.ObjectToByteArray(msg).CopyTo(bytesOut, 0);
+            ns.Write(bytesOut, 0, bytesOut.Count());
+            ns.Flush();
+        }
+
+        private Message ReceiveMessage()
+        {
+            ns.Read(bytesIn, 0, bufferSize);
+            return (Message)Serializer.ByteArrayToObject(bytesIn);
+        }
+
+        public void Dispose()
+        {
+            this.socket.GetStream().Close();
+            this.socket.Client.Disconnect(false);
+        }
     }
 }

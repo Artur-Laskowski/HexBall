@@ -1,18 +1,22 @@
-﻿using System;
+﻿using HexBall;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Server
 {
     public class SocketService
     {
         TcpListener serverSocket { get; set; }
-        TcpClient clientSocket { get; set; }
+        List<ClientService> clients { get; set; }
 
-        int connections { get; set; } = 0;
+        private Game game { get; set; }
+        private int connections { get; set; } = 0;
 
         public SocketService(int port, string ip)
         {
@@ -26,24 +30,35 @@ namespace Server
             {
                 this.serverSocket = new TcpListener(System.Net.IPAddress.Parse(ip), port);
             }
-
-
             //client socket obj
-            this.clientSocket = new TcpClient();
+            this.clients = new List<ClientService>();
         }
 
         public void Start()
         {
+            this.game = new Game();
             this.serverSocket.Start();
-            Console.WriteLine(" >> " + "Server Started");
-            while (true)
-            {
-                this.clientSocket = serverSocket.AcceptTcpClient();
-                connections++;
-                Console.WriteLine(" >> " + "user " + connections + " connected");
-                new ClientService(this.clientSocket, connections);
-            }
+
+            /*
+            Thread gameThread = new Thread(game.Update);
+            gameThread.Start();
+            */
+
+            Thread listenerThread = new Thread(Listener);
+            listenerThread.Start();
         }
 
+        //nasłuchuje połączeń, jeżeli nastąpi to tworzy nowy CilentService i dodaje do listy
+        //obsługa połączenia z klientem poprzez ClientService
+        private void Listener()
+        {
+            while (true)
+            {
+                var clientSocket = serverSocket.AcceptTcpClient();
+                connections++;
+                Console.WriteLine(" >> " + "user " + connections + " connected");
+                this.clients.Add(new ClientService(clientSocket,connections,game));
+            }
+        }
     }
 }

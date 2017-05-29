@@ -22,8 +22,8 @@ namespace HexBall
         {
             InitializeComponent();
             
-            _game = new Game(canvas1);
-            _game.InitCanvas();
+            _game = new Game();
+            //_game.InitCanvas();
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(10000 / 60);
@@ -35,7 +35,7 @@ namespace HexBall
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            _game.UpdateCanvas();
+            //_game.UpdateCanvas();
         }
 
 
