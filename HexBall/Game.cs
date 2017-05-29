@@ -171,21 +171,21 @@ namespace HexBall
                    a.Second <= Size.Item1 - margin;
         }
 
-        public int HasScored(Pair a)
+        public Score HasScored(Pair a)
         {
             if (a.First > ZoneA.Item1.Second && a.First < ZoneA.Item2.Second && a.Second > ZoneA.Item1.First &&
                 a.Second < ZoneA.Item2.First)
             {
-                return 0;
+                return Score.ZoneAGoal;
             }
 
             if (a.First > ZoneB.Item1.Second && a.First < ZoneB.Item2.Second && a.Second > ZoneB.Item1.First &&
                 a.Second < ZoneB.Item2.First)
             {
-                return 1;
+                return Score.ZoneBGoal;
             }
 
-            return -1;
+            return Score.NoScore;
         }
 
         /// <summary>

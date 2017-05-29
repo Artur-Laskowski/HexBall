@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO.Pipes;
 using System.Windows.Media;
 
 namespace HexBall
@@ -146,7 +148,7 @@ namespace HexBall
                 Second = Position.Second + Velocity.Second * this.game.TimeDelta
             };
             if (this.game.IsInBounds(proposedPos, Margin))
-                //TODO: additional checks(collision,etc), if fails, set velocity to 0
+            //TODO: additional checks(collision,etc), if fails, set velocity to 0
             {
                 var flag = false;
 
@@ -155,16 +157,16 @@ namespace HexBall
                 {
                     if (e == this)
                         continue;
-                    if (Pair.Distance(e.Position, Position) < (double)(e.Size + Size) / 2)
+                    if (Pair.Distance(e.GetCenterPostion(), GetCenterPostion()) < (e.Size + Size) / 2.0)
                     {
                         Collide(e);
                         flag = true;
                     }
                 }
-                    
+
 
                 //ball collision
-                if (Pair.Distance(this.game.Ball.Position, Position) < (double)(this.game.Ball.Size + Size) / 2)
+                if (Pair.Distance(this.game.Ball.GetCenterPostion(), GetCenterPostion()) < (double)(this.game.Ball.Size + Size) / 2)
                 {
                     Collide(this.game.Ball);
                     flag = true;
@@ -188,9 +190,14 @@ namespace HexBall
             }
         }
 
+        public Pair GetCenterPostion()
+        {
+            return new Pair(Position.First + Size / 2.0, Position.Second + Size / 2.0);
+        }
+
         public Tuple<Pair, Color, int> GetPositionColorSize()
         {
-            return new Tuple<Pair, Color, int>(Position,EntityColor,Size);
+            return new Tuple<Pair, Color, int>(Position, EntityColor, Size);
         }
 
         /// <summary>
