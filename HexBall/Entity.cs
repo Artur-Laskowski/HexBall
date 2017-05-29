@@ -151,7 +151,7 @@ namespace HexBall
                 var flag = false;
 
                 //player collision
-                foreach (var e in this.game.players)
+                foreach (var e in this.game.Players)
                 {
                     if (e == this)
                         continue;
@@ -164,9 +164,9 @@ namespace HexBall
                     
 
                 //ball collision
-                if (Pair.Distance(this.game.ball.Position, Position) < (double)(this.game.ball.Size + Size) / 2)
+                if (Pair.Distance(this.game.Ball.Position, Position) < (double)(this.game.Ball.Size + Size) / 2)
                 {
-                    Collide(this.game.ball);
+                    Collide(this.game.Ball);
                     flag = true;
                 }
 
@@ -186,6 +186,11 @@ namespace HexBall
                     Position = proposedPos;
                 }
             }
+        }
+
+        public Tuple<Pair, Color, int> GetPositionColorSize()
+        {
+            return new Tuple<Pair, Color, int>(Position,EntityColor,Size);
         }
 
         /// <summary>

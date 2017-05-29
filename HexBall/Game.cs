@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.XPath;
 
 namespace HexBall
 {
@@ -46,8 +47,8 @@ namespace HexBall
         /// <summary>
         ///     List of all entities. TODO make it static so it can be easily accessed by entites when colliding?
         /// </summary>
-        public Ball ball;
-        public List<Player> players;
+        public Ball Ball;
+        public List<Player> Players;
 
         public int ScoreA = 0;
         public int ScoreB = 0;
@@ -61,7 +62,7 @@ namespace HexBall
         public Game(Canvas c)
         {
             this.canv = c;
-            players = new List<Player>();
+            Players = new List<Player>();
             //Placeholders. Naturally objects will be added dynamicly.
             //TODO make it dynamic.
 
@@ -74,13 +75,13 @@ namespace HexBall
         private void AddBall()
         {
             var boardCenter = GetCenterOfBoard();
-            ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
+            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
         }
 
         private void AddPlayer(Pair position)
         {
             var player = new Player(position, Player.MaxSpeed, Player.Dimension, Colour.Red) { game = this };
-            players.Add(player);
+            Players.Add(player);
         }
 
         private Pair GetCenterOfBoard()
@@ -94,58 +95,39 @@ namespace HexBall
 
             _attributes = new List<Tuple<Pair, Color, int>>();
 
-            //We create 5 ellipses (4 players and 1 ball).
-            //Unused ones have 0 size so are not visible.
-            //TODO do it dynamically?
-            //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
-            //If we need them, we change their size and color.
-            for (var i = 0; i < 2; i++)
-            {
-                var myEllipse = new Ellipse();
+            foreach (var player in Players)
+                AddEntityShape(player);
+           
+            AddEntityShape(Ball);
 
-                // Create a SolidColorBrush with a red color to fill the 
-                // Ellipse with.
-                var mySolidColorBrush = new SolidColorBrush { Color = Color.FromArgb(255, 255, 255, 0) };
+            AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
+            AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
+        }
 
-                // Describes the brush's color using RGB values. 
-                // Each value has a range of 0-255.
-                myEllipse.Fill = mySolidColorBrush;
-                myEllipse.StrokeThickness = 2;
-                myEllipse.Stroke = Brushes.Black;
-
-                // Set the width and height of the Ellipse.
-                myEllipse.Width = 0;
-                myEllipse.Height = 0; //All 5 possible objects
-
-                //myEllipse.SetValue(Canvas.TopProperty, 10);
-                //myEllipse.SetValue(Canvas.LeftProperty, 10);
-
-                _shapes.Add(myEllipse);
-
-                canv.Children.Add(myEllipse);
-            }
-
-            var brush = new SolidColorBrush { Color = Color.FromArgb(200, 200, 200, 0) };
-
-            var zoneA = new Rectangle
+        private void AddGoalShape(Pair startPair, Pair endPair)
+        {
+            var brush = new SolidColorBrush {Color = Colour.YellowTransparent};
+            var goal = new Rectangle
             {
                 Fill = brush,
-                Width = Math.Abs(Game.ZoneA.Item1.First - Game.ZoneA.Item2.First),
-                Height = Math.Abs(Game.ZoneA.Item1.Second - Game.ZoneA.Item2.Second)
+                Width = Math.Abs(startPair.First - endPair.First),
+                Height = Math.Abs(startPair.Second - endPair.Second)
             };
-            canv.Children.Add(zoneA);
-            zoneA.SetValue(Canvas.TopProperty, Game.ZoneA.Item1.Second);
-            zoneA.SetValue(Canvas.LeftProperty, Game.ZoneA.Item1.First);
+            canv.Children.Add(goal);
+            goal.SetValue(Canvas.TopProperty, startPair.Second);
+            goal.SetValue(Canvas.LeftProperty, startPair.First);
+        }
 
-            var zoneB = new Rectangle
+        private void AddEntityShape(Entity entity)
+        {
+            var entityEllipse = new Ellipse
             {
-                Fill = brush,
-                Width = Math.Abs(Game.ZoneB.Item1.First - Game.ZoneB.Item2.First),
-                Height = Math.Abs(Game.ZoneB.Item1.Second - Game.ZoneB.Item2.Second)
+                Stroke = Brushes.Black,
+                Fill = new SolidColorBrush(entity.EntityColor)
             };
-            canv.Children.Add(zoneB);
-            zoneB.SetValue(Canvas.TopProperty, Game.ZoneB.Item1.Second);
-            zoneB.SetValue(Canvas.LeftProperty, Game.ZoneB.Item1.First);
+
+            _shapes.Add(entityEllipse);
+            canv.Children.Add(entityEllipse);
         }
 
         public void UpdateCanvas()
@@ -170,7 +152,7 @@ namespace HexBall
 
         public void UpdatePlayerMovement(PlayerDir mov, int playerIndex)
         {
-            this.players[playerIndex].playerAction = mov;
+            this.Players[playerIndex].playerAction = mov;
         }
 
         /// <summary>
@@ -220,12 +202,12 @@ namespace HexBall
 
             //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
             attributes.Clear();
-            foreach (var e in players)
+            foreach (var e in Players)
             {
                 e.Update();
-                attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));
+                attributes.Add(e.GetPositionColorSize());
             }
-            attributes.Add(new Tuple<Pair, Color, int>(ball.Position,ball.EntityColor,ball.Size));
+            attributes.Add(Ball.GetPositionColorSize());
         }
     }
 }
