@@ -99,7 +99,7 @@ namespace HexBall
             //TODO do it dynamically?
             //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
             //If we need them, we change their size and color.
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 2; i++)
             {
                 var myEllipse = new Ellipse();
 
@@ -225,6 +225,7 @@ namespace HexBall
                 e.Update();
                 attributes.Add(new Tuple<Pair, Color, int>(e.Position, e.EntityColor, e.Size));
             }
+            attributes.Add(new Tuple<Pair, Color, int>(ball.Position,ball.EntityColor,ball.Size));
         }
     }
 }

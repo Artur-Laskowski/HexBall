@@ -8,7 +8,7 @@ namespace HexBall
         public static int Dimension = 10;
         public Ball(Pair position, double maxSpeed, int size) : base(position, maxSpeed, size)
         {
-            EntityColor = Colour.White;
+            EntityColor = Colour.Black;
             Margin = 20;
         }
 
