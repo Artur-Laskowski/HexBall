@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Client;
 
 namespace HexBall
 {
+    public enum Team
+    {
+        A,
+        B,
+        None
+    }
+
     public class Player : Entity
     {
         public static double MaxSpeed = 1;
@@ -71,5 +79,11 @@ namespace HexBall
             vector.Second = -vector.Second;
             AddVelocity(vector);
         }
+
+        public override Team GetTeam()
+        {
+            return EntityColor == Game.TeamAColor ? Team.A : Team.B;
+        }
+
     }
 }

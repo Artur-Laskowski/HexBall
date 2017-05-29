@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="model\EntityAttr.cs" />
     <Compile Include="model\Ball.cs" />
     <Compile Include="ClientService.cs" />
     <Compile Include="enums\Colour.cs" />

@@ -203,5 +203,15 @@ namespace HexBall
             UpdateVelocity();
             UpdatePosition(time);
         }
+
+        public EntityAttr GetAttributies()
+        {
+            return new EntityAttr(this);
+        }
+
+        public virtual Team GetTeam()
+        {
+            return Team.None;
+        }
     }
 }

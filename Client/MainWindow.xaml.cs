@@ -29,7 +29,7 @@ namespace Client
 
         //Game.cs
         public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
-        public List<Tuple<Pair, Color, int>> attributes { get; set; }
+        public List<EntityAttr> attributes { get; set; }
         public List<Ellipse> shapes { get; set; }
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
@@ -48,7 +48,8 @@ namespace Client
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            //chyba niepotrzebne bo uaktualniamy plansze na dane z serwera
+            if (cc != null)
+                UpdateCanvas();
         }
 
 
@@ -100,7 +101,6 @@ namespace Client
                     playerMovement = PlayerDir.Right;
             }
             //TODO wyslac ruch do serwera
-            this.cc.playerMovement = playerMovement;
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -112,79 +112,46 @@ namespace Client
 
         public void InitCanvas()
         {
-            shapes = new List<Ellipse>();
-
-            //We create 5 ellipses (4 players and 1 ball).
-            //Unused ones have 0 size so are not visible.
-            //TODO do it dynamically?
-            //Having zero size shapes shouldn't cause problems, they have no game object tied to them.
-            //If we need them, we change their size and color.
-            for (var i = 0; i < 5; i++)
-            {
-                var myEllipse = new Ellipse();
-
-                // Create a SolidColorBrush with a red color to fill the 
-                // Ellipse with.
-                var mySolidColorBrush = new SolidColorBrush { Color = Color.FromArgb(255, 255, 255, 0) };
-
-                // Describes the brush's color using RGB values. 
-                // Each value has a range of 0-255.
-                myEllipse.Fill = mySolidColorBrush;
-                myEllipse.StrokeThickness = 2;
-                myEllipse.Stroke = (i == this.cc.playerIndex) ? Brushes.White : Brushes.Black;
-
-                // Set the width and height of the Ellipse.
-                myEllipse.Width = 0;
-                myEllipse.Height = 0; //All 5 possible objects
-
-                //myEllipse.SetValue(Canvas.TopProperty, 10);
-                //myEllipse.SetValue(Canvas.LeftProperty, 10);
-
-                shapes.Add(myEllipse);
-
-                canv.Children.Add(myEllipse);
-            }
-
-            var brush = new SolidColorBrush { Color = Color.FromArgb(200, 200, 200, 0) };
-
-            var zoneA = new Rectangle
+            AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
+            AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
+        }
+        private void AddGoalShape(Pair startPair, Pair endPair)
+        {
+            var brush = new SolidColorBrush { Color = Colour.YellowTransparent };
+            var goal = new Rectangle
             {
                 Fill = brush,
-                Width = Math.Abs(Game.ZoneA.Item1.First - Game.ZoneA.Item2.First),
-                Height = Math.Abs(Game.ZoneA.Item1.Second - Game.ZoneA.Item2.Second)
+                Width = Math.Abs(startPair.First - endPair.First),
+                Height = Math.Abs(startPair.Second - endPair.Second)
             };
-            canv.Children.Add(zoneA);
-            zoneA.SetValue(Canvas.TopProperty, Game.ZoneA.Item1.Second);
-            zoneA.SetValue(Canvas.LeftProperty, Game.ZoneA.Item1.First);
-
-            var zoneB = new Rectangle
-            {
-                Fill = brush,
-                Width = Math.Abs(Game.ZoneB.Item1.First - Game.ZoneB.Item2.First),
-                Height = Math.Abs(Game.ZoneB.Item1.Second - Game.ZoneB.Item2.Second)
-            };
-            canv.Children.Add(zoneB);
-            zoneB.SetValue(Canvas.TopProperty, Game.ZoneB.Item1.Second);
-            zoneB.SetValue(Canvas.LeftProperty, Game.ZoneB.Item1.First);
+            canv.Children.Add(goal);
+            goal.SetValue(Canvas.TopProperty, startPair.Second);
+            goal.SetValue(Canvas.LeftProperty, startPair.First);
         }
 
+        private void DrawEntityShape(EntityAttr attr)
+        {
+            var entityEllipse = new Ellipse
+            {
+                Stroke = Brushes.Black,
+                Fill = new SolidColorBrush(attr.GetColor())
+            };
+            entityEllipse.SetValue(Canvas.TopProperty, attr.Position.First);
+            entityEllipse.SetValue(Canvas.LeftProperty, attr.Position.Second);
+            entityEllipse.Width = attr.Size;
+            entityEllipse.Height = attr.Size;
+            
+            //TODO bardzo zle zrobione
+            canv.Children.Add(entityEllipse);
+        }
         public void UpdateCanvas()
         {
-            var _attributes = this.cc.GetSetAttributes();
+             attributes = this.cc.GetSetAttributes();
 
-            for (var i = 0; i < _attributes.Count; i++)
+            for (var i = 0; i < attributes.Count; i++)
             {
-                var shape = shapes.ElementAt(i);
-                var attribute = _attributes.ElementAt(i);
-
-                shape.SetValue(Canvas.TopProperty, attribute.Item1.First);
-                shape.SetValue(Canvas.LeftProperty, attribute.Item1.Second);
-
-                var mySolidColorBrush = new SolidColorBrush(attribute.Item2);
-                shape.Fill = mySolidColorBrush;
-
-                shape.Width = attribute.Item3;
-                shape.Height = attribute.Item3;
+                var attribute = attributes.ElementAt(i);
+                DrawEntityShape(attribute);
             }
         }
 

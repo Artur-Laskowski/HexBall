@@ -2,6 +2,7 @@
 
 namespace HexBall
 {
+    [Serializable]
     public class Pair
     {
         public double First { get; set; }

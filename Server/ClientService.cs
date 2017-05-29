@@ -24,15 +24,15 @@ namespace Server
 
         private int clientId;
         private int playerIndex;
-
-        private List<Tuple<Pair, Color, int>> asd;
+        
+        private List<EntityAttr> shapes;
 
         public ClientService(TcpClient inClientSocket, int nmbr, Game g)
         {
             this.socket = inClientSocket;
             this.clientId = nmbr;
             this.game = g;
-            this.asd = new List<Tuple<Pair, Color, int>>();
+            this.shapes = new List<EntityAttr>();
 
             this.socket.NoDelay = true;
 
@@ -49,22 +49,20 @@ namespace Server
 
             Message msg;
 
-            this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.asd });
+            this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.shapes });
 
             while (true)
             {
                 msg = this.ReceiveMessage();
-                if (msg == null)
-                {
-                    int asd = 5;
-                }
-                this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.asd });
+                shapes = game.GetAttributies();
+                this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.shapes });
             }
         }
 
         private void SendPlayerIndex()
         {
-            this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = clientId });
+            var index = game.AddPlayer();
+            this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = index });
         }
 
         private void SendMessage(Message msg)

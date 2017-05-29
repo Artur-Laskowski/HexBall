@@ -22,7 +22,7 @@ namespace Client
 
         public int playerIndex { get; set; }
 
-        private List<Tuple<Pair, Color, int>> attributes { get; set; }
+        private List<EntityAttr> attributes { get; set; }
 
         public PlayerDir playerMovement { get; set; }
 
@@ -32,7 +32,7 @@ namespace Client
             bytesOut = new byte[bufferSize];
 
             this.playerMovement = PlayerDir.NoMove;
-            this.attributes = new List<Tuple<Pair, Color, int>>();
+            this.attributes = new List<EntityAttr>();
 
             this.socket = new TcpClient(ip, port);
 
@@ -44,7 +44,7 @@ namespace Client
         /// 
         /// </summary>
         /// <param name="get">true - odczytujemy attributes, false - zapisujemy</param>
-        public List<Tuple<Pair, Color, int>> GetSetAttributes(bool get = true, List<Tuple<Pair, Color, int>> newAttributes = null)
+        public List<EntityAttr> GetSetAttributes(bool get = true, List<EntityAttr> newAttributes = null)
         {
             //semafor
             lock (this.attributes)
@@ -72,8 +72,10 @@ namespace Client
                 switch (msg.type)
                 {
                     case MessageType.Canvas:
-                        this.GetSetAttributes(false, (List<Tuple<Pair, Color, int>>)msg.data);
+                        var attrs = ((List<EntityAttr>) msg.data);
+                        this.GetSetAttributes(false, attrs);
                         break;
+
                     case MessageType.Goal:
                         break;
                 }

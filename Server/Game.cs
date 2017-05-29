@@ -11,6 +11,10 @@ namespace HexBall
 {
     public class Game
     {
+        public static Color TeamAColor = Colour.Red;
+        public static Color TeamBColor = Colour.Blue;
+        public static Color BallColor = Colour.Black;
+
 
         //public Canvas canv;
         /// <summary>
@@ -35,9 +39,10 @@ namespace HexBall
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
 
-        
+
         public Game()
         {
+            Players = new List<Player>();
             AddBall();
         }
 
@@ -47,11 +52,20 @@ namespace HexBall
             Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
         }
 
-        private void AddPlayer()
+        public int AddPlayer()
         {
             //TODO start position
-            var position = new Pair(10, 10);
-            var player = new Player(position, Player.MaxSpeed, Player.Dimension, Colour.Red) { game = this };
+            var position = GetFreePostion();
+            var color = GetNewPlayerColor();
+            var player = new Player(position, Player.MaxSpeed, Player.Dimension, color) { game = this };
+            Players.Add(player);
+            return Players.IndexOf(player);
+        }
+
+        private Color GetNewPlayerColor()
+        {
+            var teamSizes = GetTeamsSizes();
+            return teamSizes.First == teamSizes.Second ? TeamAColor : TeamBColor;
         }
 
         private void RemovePlayer(int index)
@@ -59,9 +73,39 @@ namespace HexBall
             //TODO implement
         }
 
+        private Pair GetTeamsSizes()
+        {
+            var size = new Pair(0, 0);
+            foreach (var player in Players)
+            {
+                if (player.GetTeam() == Team.A)
+                    size.First++;
+                else
+                    size.Second++;
+            }
+            return size;
+        }
+
         private static Pair GetCenterOfBoard()
         {
             return new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3);
+        }
+
+        private Pair GetFreePostion()
+        {
+            //TODO random
+            var random = new Random();
+            var x = random.Next(Size.Item1);
+            var y = random.Next(Size.Item2);
+            return new Pair(x, y);
+        }
+
+        public List<EntityAttr> GetAttributies()
+        {
+            var attributies = Players.Select(player => player.GetAttributies()).ToList();
+            attributies.Add(Ball.GetAttributies());
+
+            return attributies;
         }
 
         /// <summary>
