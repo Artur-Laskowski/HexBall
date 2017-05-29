@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="463.444" Width="945.547">
+        Title="MainWindow" Height="463.444" Width="945.547" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Grid Margin="0,0,3.6,100.2">
         <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="843,74,0,0" VerticalAlignment="Top" Width="65" Click="Connect_Server"/>
         <Canvas x:Name="canvas1" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="800" Background="#FF3E8344">

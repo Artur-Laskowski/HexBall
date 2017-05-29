@@ -97,10 +97,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HexBall\HexBall.csproj">
-      <Project>{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}</Project>
-      <Name>HexBall</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Server\Server.csproj">
       <Project>{F9449F55-9CE8-44DD-B372-31B298C4968F}</Project>
       <Name>Server</Name>

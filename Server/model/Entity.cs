@@ -140,12 +140,12 @@ namespace HexBall
         ///     Updates object's position every frame, based on it's velocity.
         ///     Called from Update().
         /// </summary>
-        protected virtual void UpdatePosition()
+        protected virtual void UpdatePosition(double time)
         {
             var proposedPos = new Pair
             {
-                First = Position.First + Velocity.First * this.game.TimeDelta,
-                Second = Position.Second + Velocity.Second * this.game.TimeDelta
+                First = Position.First + Velocity.First * time,
+                Second = Position.Second + Velocity.Second * time
             };
 
             if (!this.game.IsInBounds(proposedPos, Margin))
@@ -166,23 +166,23 @@ namespace HexBall
             if (IsColliding(game.Ball))
                 Collide(this.game.Ball);
 
-            proposedPos.First = Position.First + Velocity.First * this.game.TimeDelta;
-            proposedPos.Second = Position.Second + Velocity.Second * this.game.TimeDelta;
+            proposedPos.First = Position.First + Velocity.First * time;
+            proposedPos.Second = Position.Second + Velocity.Second * time;
             if (this.game.IsInBounds(proposedPos, Margin))
             {
                 Position = proposedPos;
             }
             else
             {
-                proposedPos.First = Position.First - Velocity.First * this.game.TimeDelta;
-                proposedPos.Second = Position.Second - Velocity.Second * this.game.TimeDelta;
+                proposedPos.First = Position.First - Velocity.First * time;
+                proposedPos.Second = Position.Second - Velocity.Second * time;
                 Position = proposedPos;
             }
         }
 
         private bool IsColliding(Entity other)
         {
-            return Pair.Distance(other.GetCenterPostion(), GetCenterPostion()) <= (other.Size + Size) / 2.0);
+            return Pair.Distance(other.GetCenterPostion(), GetCenterPostion()) <= (other.Size + Size) / 2.0;
         }
 
         public Pair GetCenterPostion()
@@ -198,10 +198,10 @@ namespace HexBall
         /// <summary>
         ///     Update function. Called every frame.
         /// </summary>
-        public void Update()
+        public void Update(double time)
         {
             UpdateVelocity();
-            UpdatePosition();
+            UpdatePosition(time);
         }
     }
 }

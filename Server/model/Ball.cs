@@ -12,9 +12,9 @@ namespace HexBall
             Margin = 20;
         }
 
-        protected override void UpdatePosition()
+        protected override void UpdatePosition(double time)
         {
-            base.UpdatePosition();
+            base.UpdatePosition(time);
             var result = game.HasScored(Position);
             switch (result)
             {
@@ -29,7 +29,7 @@ namespace HexBall
                     game.ScoreA++;
                     break;
             }
-
+            game.ResetBall();
             Position.First = Game.Size.Item2 / 2 - 3;
             Position.Second = Game.Size.Item1 / 2 - 3;
             Velocity.First = 0;

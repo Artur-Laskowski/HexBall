@@ -42,35 +42,35 @@ namespace HexBall
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             
-            var w = Keyboard.IsKeyDown(Key.D);
-            var a = Keyboard.IsKeyDown(Key.W);
-            var s = Keyboard.IsKeyDown(Key.A);
-            var d = Keyboard.IsKeyDown(Key.S);
+            var keyD = Keyboard.IsKeyDown(Key.D);
+            var keyW = Keyboard.IsKeyDown(Key.W);
+            var keyA = Keyboard.IsKeyDown(Key.A);
+            var keyS = Keyboard.IsKeyDown(Key.S);
             //var space = Keyboard.IsKeyDown(Key.Space);
             var playerMovement = PlayerDir.NoMove;
-            if (w)
+            if (keyD)
             {
-                if (a)
+                if (keyW)
                     playerMovement = PlayerDir.LeftUp;
-                if (d)
+                if (keyS)
                     playerMovement = PlayerDir.RightUp;
-                if (!a && !d)
+                if (!keyW && !keyS)
                     playerMovement = PlayerDir.Up;
             }
-            if (s)
+            if (keyA)
             {
-                if (a)
+                if (keyW)
                     playerMovement = PlayerDir.LeftDown;
-                if (d)
+                if (keyS)
                     playerMovement = PlayerDir.RightDown;
-                if (!a && !d)
+                if (!keyW && !keyS)
                     playerMovement = PlayerDir.Down;
             }
-            if (!w && !s)
+            if (!keyD && !keyA)
             {
-                if (a)
+                if (keyW)
                     playerMovement = PlayerDir.Left;
-                if (d)
+                if (keyS)
                     playerMovement = PlayerDir.Right;
             }
             _game.UpdatePlayerMovement(playerMovement, 0);

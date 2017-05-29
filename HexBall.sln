@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexBall", "HexBall\HexBall.csproj", "{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{F9449F55-9CE8-44DD-B372-31B298C4968F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{6CAD4409-E080-4C09-AE04-826617CEBBE3}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F05C780C-66D2-4C56-B9FB-FBEC2F8067BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9449F55-9CE8-44DD-B372-31B298C4968F}.Release|Any CPU.ActiveCfg = Release|Any CPU
