@@ -75,7 +75,7 @@ namespace HexBall
         private void AddBall()
         {
             var boardCenter = GetCenterOfBoard();
-            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
+            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension) { game = this };
         }
 
         private void AddPlayer(Pair position)
@@ -97,7 +97,7 @@ namespace HexBall
 
             foreach (var player in Players)
                 AddEntityShape(player);
-           
+
             AddEntityShape(Ball);
 
             AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
@@ -106,7 +106,7 @@ namespace HexBall
 
         private void AddGoalShape(Pair startPair, Pair endPair)
         {
-            var brush = new SolidColorBrush {Color = Colour.YellowTransparent};
+            var brush = new SolidColorBrush { Color = Colour.YellowTransparent };
             var goal = new Rectangle
             {
                 Fill = brush,
@@ -208,6 +208,7 @@ namespace HexBall
                 attributes.Add(e.GetPositionColorSize());
             }
             attributes.Add(Ball.GetPositionColorSize());
+            Ball.Update();
         }
     }
 }
