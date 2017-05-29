@@ -147,47 +147,42 @@ namespace HexBall
                 First = Position.First + Velocity.First * this.game.TimeDelta,
                 Second = Position.Second + Velocity.Second * this.game.TimeDelta
             };
-            if (this.game.IsInBounds(proposedPos, Margin))
-            //TODO: additional checks(collision,etc), if fails, set velocity to 0
+
+            if (!this.game.IsInBounds(proposedPos, Margin))
+                return;
+
+            //player collision
+            foreach (var otherPlayer in this.game.Players)
             {
-                var flag = false;
+                if (otherPlayer == this)
+                    continue;
 
-                //player collision
-                foreach (var e in this.game.Players)
-                {
-                    if (e == this)
-                        continue;
-                    if (Pair.Distance(e.GetCenterPostion(), GetCenterPostion()) < (e.Size + Size) / 2.0)
-                    {
-                        Collide(e);
-                        flag = true;
-                    }
-                }
-
-
-                //ball collision
-                if (Pair.Distance(this.game.Ball.GetCenterPostion(), GetCenterPostion()) < (double)(this.game.Ball.Size + Size) / 2)
-                {
-                    Collide(this.game.Ball);
-                    flag = true;
-                }
-
-                if (!flag)
-                {
-                    proposedPos.First = Position.First + Velocity.First * this.game.TimeDelta;
-                    proposedPos.Second = Position.Second + Velocity.Second * this.game.TimeDelta;
-                }
-                if (this.game.IsInBounds(proposedPos, Margin))
-                {
-                    Position = proposedPos;
-                }
-                else
-                {
-                    proposedPos.First = Position.First - Velocity.First * this.game.TimeDelta;
-                    proposedPos.Second = Position.Second - Velocity.Second * this.game.TimeDelta;
-                    Position = proposedPos;
-                }
+                if (IsColliding(otherPlayer))
+                    Collide(otherPlayer);
             }
+
+
+            //ball collision
+            if (this.GetType()!=typeof(Ball) && IsColliding(game.Ball))
+                Collide(this.game.Ball);
+
+            proposedPos.First = Position.First + Velocity.First * this.game.TimeDelta;
+            proposedPos.Second = Position.Second + Velocity.Second * this.game.TimeDelta;
+            if (this.game.IsInBounds(proposedPos, Margin))
+            {
+                Position = proposedPos;
+            }
+            else
+            {
+                proposedPos.First = Position.First - Velocity.First * this.game.TimeDelta;
+                proposedPos.Second = Position.Second - Velocity.Second * this.game.TimeDelta;
+                Position = proposedPos;
+            }
+        }
+
+        private bool IsColliding(Entity other)
+        {
+            return Pair.Distance(other.GetCenterPostion(), GetCenterPostion()) <= (other.Size + Size) / 2.0;
         }
 
         public Pair GetCenterPostion()
