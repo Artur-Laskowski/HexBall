@@ -20,9 +20,11 @@ namespace Client
         private byte[] bytesOut;
         private const int bufferSize = 8192;
 
+        public int playerIndex { get; set; }
+
         private List<Tuple<Pair, Color, int>> attributes { get; set; }
 
-        public PlayerDir playerMovement;
+        public PlayerDir playerMovement { get; set; }
 
         public ConnectionController(string ip, int port)
         {
@@ -58,10 +60,15 @@ namespace Client
             ns = this.socket.GetStream();
             Message msg;
             msg = ReceiveMessage();
-
+            this.playerIndex = (int)msg.data;
             while (true)
             {
                 msg = ReceiveMessage();
+                if (msg == null)
+                {
+                    continue;
+                }
+
                 switch (msg.type)
                 {
                     case MessageType.Canvas:
@@ -70,9 +77,9 @@ namespace Client
                     case MessageType.Goal:
                         break;
                 }
+
                 //wyslij movement
-                if (playerMovement != PlayerDir.NoMove)
-                    SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
+                SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
             }
         }
 
@@ -81,12 +88,18 @@ namespace Client
         {
             Serializer.ObjectToByteArray(msg).CopyTo(bytesOut, 0);
             ns.Write(bytesOut, 0, bytesOut.Count());
-            ns.Flush();
         }
 
         private Message ReceiveMessage()
         {
-            ns.Read(bytesIn, 0, bufferSize);
+            int remaining = bufferSize;
+            int pos = 0;
+            while (remaining != 0)
+            {
+                int bytes = ns.Read(bytesIn, pos, remaining);
+                pos += bytes;
+                remaining -= bytes;
+            }
             return (Message)Serializer.ByteArrayToObject(bytesIn);
         }
     }
