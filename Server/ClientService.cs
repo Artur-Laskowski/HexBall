@@ -24,15 +24,19 @@ namespace Server
         private int clientId;
         private int playerIndex;
 
+        private List<Tuple<Pair, Color, int>> asd;
+
         public ClientService(TcpClient inClientSocket, int nmbr, Game g)
         {
             this.socket = inClientSocket;
             this.clientId = nmbr;
             this.game = g;
+            this.asd = new List<Tuple<Pair, Color, int>>();
+
+            this.socket.NoDelay = true;
 
             bytesIn = new byte[bufferSize];
             bytesOut = new byte[bufferSize];
-
             Thread connectionThread = new Thread(ConnectionHandler);
             connectionThread.Start();
         }
@@ -44,18 +48,16 @@ namespace Server
 
             Message msg;
 
+            this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.asd });
+
             while (true)
             {
-                try
+                msg = this.ReceiveMessage();
+                if (msg == null)
                 {
-                    this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = new List<Tuple<Pair, Color, int>>() });
-                    msg = this.ReceiveMessage();
+                    int asd = 5;
                 }
-                catch(Exception e)
-                {
-                    break;
-                }
-                
+                this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.asd });
             }
         }
 
@@ -68,12 +70,21 @@ namespace Server
         {
             Serializer.ObjectToByteArray(msg).CopyTo(bytesOut, 0);
             ns.Write(bytesOut, 0, bytesOut.Count());
-            ns.Flush();
         }
 
         private Message ReceiveMessage()
         {
-            ns.Read(bytesIn, 0, bufferSize);
+            int remaining = bufferSize;
+            int pos = 0;
+            while (remaining != 0)
+            {
+                int bytes = ns.Read(bytesIn, pos, remaining);
+                pos += bytes;
+                remaining -= bytes;
+            }
+
+
+
             return (Message)Serializer.ByteArrayToObject(bytesIn);
         }
 
