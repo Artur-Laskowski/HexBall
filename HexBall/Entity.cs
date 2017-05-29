@@ -163,7 +163,7 @@ namespace HexBall
 
 
             //ball collision
-            if (this.GetType()!=typeof(Ball) && IsColliding(game.Ball))
+            if (IsColliding(game.Ball))
                 Collide(this.game.Ball);
 
             proposedPos.First = Position.First + Velocity.First * this.game.TimeDelta;
@@ -182,7 +182,7 @@ namespace HexBall
 
         private bool IsColliding(Entity other)
         {
-            return Pair.Distance(other.GetCenterPostion(), GetCenterPostion()) <= (other.Size + Size) / 2.0;
+            return Pair.Distance(other.GetCenterPostion(), GetCenterPostion()) <= (other.Size + Size) / 2.0);
         }
 
         public Pair GetCenterPostion()
