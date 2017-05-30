@@ -35,7 +35,7 @@ namespace Server
             this.socket = inClientSocket;
             this.clientId = nmbr;
             this.game = g;
-            this.attribs = new EntityAttr[4];
+            this.attribs = new EntityAttr[Game.EntityAttrsSize];
 
             //this.socket.NoDelay = true;
 
@@ -58,9 +58,17 @@ namespace Server
             {
                 msg = this.ReceiveMessage();
                 HandleMessage(msg);
+                GoalMessage();
                 attribs = game.Attributes;
                 this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
             }
+        }
+
+        private void GoalMessage()
+        {
+            var hasScored = game.HasScored(out Team teamScore);
+            if(hasScored)
+                SendGoal(teamScore);
         }
 
         private void HandleMessage(Message msg)
@@ -92,6 +100,11 @@ namespace Server
                 this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = this.playerIndex });
             else
                 this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.NoSlots });
+        }
+
+        private void SendGoal(Team team)
+        {
+            this.SendMessage(new Server.Message(){author = MessageAuthor.Server, type = MessageType.Goal, data = team});
         }
 
         private void SendMessage(Message msg)

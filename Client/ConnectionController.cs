@@ -27,13 +27,16 @@ namespace Client
 
         public PlayerDir playerMovement { get; set; }
 
+        public int ScoreA;
+        public int ScoreB;
+
         public ConnectionController(string ip, int port)
         {
             bytesIn = new byte[bufferSize];
             bytesOut = new byte[bufferSize];
 
             this.playerMovement = PlayerDir.NoMove;
-            this.attributes = new EntityAttr[4];
+            this.attributes = new EntityAttr[5];
 
             this.socket = new TcpClient(ip, port);
 
@@ -54,6 +57,14 @@ namespace Client
                     this.attributes = newAttributes;
                 return this.attributes;
             }
+        }
+
+        public void UpdateScore(Team team)
+        {
+            if (team == Team.A)
+                ScoreA++;
+            else
+                ScoreB++;
         }
 
         private void ConnectionHandler()
@@ -84,6 +95,8 @@ namespace Client
                     this.GetSetAttributes(false, attrs);
                     break;
                 case MessageType.Goal:
+                    var scoredTeam = (Team)msg.data;
+                    UpdateScore(scoredTeam);
                     break;
             }
         }

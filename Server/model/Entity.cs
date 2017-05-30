@@ -67,7 +67,7 @@ namespace HexBall
         /// <summary>
         ///     How quickly entity looses velocity. For ball it will be less.
         /// </summary>
-        public double EntitySlowdown { get; set; } = 0.001;
+        public double EntitySlowdown { get; set; } = 0.05;
 
 
         /// <summary>

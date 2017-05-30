@@ -22,14 +22,13 @@ namespace HexBall
                     return;
 
                 case Score.ZoneAGoal:
-                    game.ScoreB++;
+                    game.Goal(Team.B);
                     break;
 
                 case Score.ZoneBGoal:
-                    game.ScoreA++;
+                    game.Goal(Team.A);
                     break;
             }
-            game.ResetBall();
             Position.First = Game.Size.Item2 / 2 - 3;
             Position.Second = Game.Size.Item1 / 2 - 3;
             Velocity.First = 0;

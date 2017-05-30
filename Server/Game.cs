@@ -15,6 +15,11 @@ namespace HexBall
         public static Color TeamBColor = Colour.Blue;
         public static Color BallColor = Colour.Black;
 
+        public static Pair[] Positions;
+
+        public static int BallIndex = 4;
+        public static int NumOfPlayers = 4;
+        public static int EntityAttrsSize = NumOfPlayers + 1;
 
         //public Canvas canv;
         /// <summary>
@@ -28,6 +33,7 @@ namespace HexBall
         public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
 
         public EntityAttr[] Attributes { get; set; }
+        private Team lastGoal = Team.None;
 
         /// <summary>
         ///     List of all entities. TODO make it static so it can be easily accessed by entites when colliding?
@@ -44,9 +50,20 @@ namespace HexBall
 
         public Game()
         {
-            Players = new Player[4];
-            Attributes = new EntityAttr[4];
+            Players = new Player[NumOfPlayers];
+            Attributes = new EntityAttr[EntityAttrsSize];
             AddBall();
+            CalculateInitPostions();
+        }
+
+        private void CalculateInitPostions()
+        {
+            Pair mapCenter = GetCenterOfBoard();
+            Positions = new Pair[4];
+            Positions[0] = new Pair(mapCenter.First - mapCenter.First / 4, mapCenter.Second - Player.Dimension);
+            Positions[1] = new Pair(mapCenter.First - mapCenter.First * 3 / 4.0, mapCenter.Second + Player.Dimension);
+            Positions[2] = new Pair(mapCenter.First + mapCenter.First / 2, mapCenter.Second - Player.Dimension);
+            Positions[3] = new Pair(mapCenter.First + mapCenter.First * 3 / 4.0, mapCenter.Second + Player.Dimension);
         }
 
 
@@ -57,39 +74,17 @@ namespace HexBall
                 return -1;
 
             var color = GetNewPlayerColor();
-            Pair mapCenter = GetCenterOfBoard();
-            Pair position;
             int index;
             //team A jest po lewej stronie planszy
             //gracze maja indeksy 0 i 1
             //team B po prawej stronie
             //gracze maja indeksy 2 i 3
             if (color == TeamAColor)
-            {
-                if (this.Players[0] == null)
-                {
-                    position = new Pair(mapCenter.First - mapCenter.First / 2, mapCenter.Second - Player.Dimension);
-                    index = 0;
-                }
-                else
-                {
-                    position = new Pair(mapCenter.First - mapCenter.First / 2, mapCenter.Second + Player.Dimension);
-                    index = 1;
-                }
-            }
+                index = this.Players[0] == null ? 0 : 1;
             else
-            {
-                if (this.Players[2] == null)
-                {
-                    position = new Pair(mapCenter.First + mapCenter.First / 2, mapCenter.Second - Player.Dimension);
-                    index = 2;
-                }
-                else
-                {
-                    position = new Pair(mapCenter.First + mapCenter.First / 2, mapCenter.Second + Player.Dimension);
-                    index = 3;
-                }
-            }
+                index = this.Players[2] == null ? 2 : 3;
+
+            var position = Positions[index];
             var player = new Player(position, Player.MaxSpeed, Player.Dimension, color) { game = this };
             this.Players[index] = player;
             return index;
@@ -103,7 +98,7 @@ namespace HexBall
         private void AddBall()
         {
             var boardCenter = GetCenterOfBoard();
-            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
+            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension) { game = this };
         }
 
         private Color GetNewPlayerColor()
@@ -130,15 +125,6 @@ namespace HexBall
         private static Pair GetCenterOfBoard()
         {
             return new Pair(Size.Item2 / 2 - 3, Size.Item1 / 2 - 3);
-        }
-
-        private Pair GetFreePostion()
-        {
-            //TODO random
-            var random = new Random();
-            var x = random.Next(Size.Item1);
-            var y = random.Next(Size.Item2);
-            return new Pair(x, y);
         }
 
         /// <summary>
@@ -174,9 +160,25 @@ namespace HexBall
             return Score.NoScore;
         }
 
+        public void IncrementGoal(Team team)
+        {
+            if (team == Team.A)
+                ScoreA++;
+            else
+                ScoreB++;
+
+            lastGoal = team;
+        }
+
+        public bool HasScored(out Team team)
+        {
+            team = lastGoal;
+            lastGoal = Team.None;
+            return team != Team.None;
+        }
+
         public void ResetBall()
         {
-            //TODO zabezpieczyć przed położeniem piłki na środku gdy jest tam gracz
             Ball.Position = GetCenterOfBoard();
         }
 
@@ -185,7 +187,7 @@ namespace HexBall
             Players[index].playerAction = mov;
         }
 
-        public void Update(bool movement = true,PlayerDir mov= PlayerDir.NoMove, int index=-1)
+        public void Update(bool movement = true, PlayerDir mov = PlayerDir.NoMove, int index = -1)
         {
             lock (Attributes)
             {
@@ -195,7 +197,7 @@ namespace HexBall
                     return;
                 }
                 //game update
-                var attr = new EntityAttr[4];
+                var attr = new EntityAttr[EntityAttrsSize];
 
                 //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
                 for (int i = 0; i < Players.Length; i++)
@@ -205,7 +207,26 @@ namespace HexBall
                     Players[i].Update(3);
                     attr[i] = Players[i].GetAttributies();
                 }
+                //Pilka
+                Ball.Update(1);
+                attr[BallIndex] = Ball.GetAttributies();
                 this.Attributes = attr;
+            }
+        }
+
+        public void Goal(Team team)
+        {
+            IncrementGoal(team);
+            ResetBall();
+            ResetPlayers();
+        }
+
+        private void ResetPlayers()
+        {
+            for (int i = 0; i < NumOfPlayers; i++)
+            {
+                if (Players[i] != null)
+                    Players[i].Position = Positions[i];
             }
         }
     }
