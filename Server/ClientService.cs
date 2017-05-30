@@ -66,7 +66,8 @@ namespace Server
 
         private void GoalMessage()
         {
-            var hasScored = game.HasScored(out Team teamScore);
+            Team teamScore;
+            var hasScored = game.HasScored(out teamScore);
             if(hasScored)
                 SendGoal(teamScore);
         }
