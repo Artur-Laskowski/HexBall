@@ -78,7 +78,7 @@ namespace Client
 
                 //wyslij movement
                 SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
             }
         }
 

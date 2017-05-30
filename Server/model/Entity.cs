@@ -154,7 +154,7 @@ namespace HexBall
             //player collision
             foreach (var otherPlayer in this.game.Players)
             {
-                if (otherPlayer == this)
+                if (otherPlayer == this || otherPlayer == null)
                     continue;
 
                 if (IsColliding(otherPlayer))

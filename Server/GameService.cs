@@ -25,9 +25,8 @@ namespace Server
         {
             while (true)
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(10));
+                await Task.Delay(TimeSpan.FromMilliseconds(1));
                 game.Update(movement: false);
-                Console.Write("G");
             }
         }
     }

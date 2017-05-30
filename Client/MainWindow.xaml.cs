@@ -41,6 +41,7 @@ namespace Client
         {
             InitializeComponent();
             this.shapes = new Ellipse[4];
+            InitCanvas();
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(10000 / 60);

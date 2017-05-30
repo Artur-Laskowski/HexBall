@@ -42,7 +42,7 @@ namespace Server
             connectionThread.Start();
         }
 
-        private void ConnectionHandler()
+        private async void ConnectionHandler()
         {
             ns = this.socket.GetStream();
             this.SendPlayerIndex();
@@ -54,10 +54,10 @@ namespace Server
             while (true)
             {
                 msg = this.ReceiveMessage();
-                //this.game.Update(movement: true, index: this.playerIndex, mov: (PlayerDir)msg.data);
-                this.game.UpdateMovemenet((PlayerDir)msg.data, this.playerIndex);
+                this.game.Update(movement: true, index: this.playerIndex, mov: (PlayerDir)msg.data);
                 attribs = game.Attributes;
                 this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
+                //await Task.Delay(100);
             }
         }
 

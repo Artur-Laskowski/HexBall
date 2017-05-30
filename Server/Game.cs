@@ -186,19 +186,27 @@ namespace HexBall
 
         public void Update(bool movement = true,PlayerDir mov= PlayerDir.NoMove, int index=-1)
         {
-            lock (Attributes)
+            List<int> sda = new List<int>();
+            lock (sda)
             {
+
+                if (movement)
+                {
+                    this.Players[index].playerAction = mov;
+                    return;
+                }
                 //game update
-                Attributes = new EntityAttr[4];
+                var attr = new EntityAttr[4];
 
                 //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
                 for (int i = 0; i < Players.Length; i++)
                 {
                     if (Players[i] == null)
                         continue;
-                    Players[i].Update(0.04);
-                    Attributes[i] = Players[i].GetAttributies();
+                    Players[i].Update(1);
+                    attr[i] = Players[i].GetAttributies();
                 }
+                this.Attributes = attr;
             }
         }
     }
