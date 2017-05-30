@@ -13,8 +13,10 @@
             <Rectangle Height="400" Canvas.Left="400" Stroke="White" StrokeThickness="4" Width="4"/>
             <Ellipse Height="12" Canvas.Left="396" Stroke="White" StrokeThickness="10" Canvas.Top="196" Width="12"/>
         </Canvas>
-        <Label x:Name="scoreLabelA" Content="Team A:" HorizontalAlignment="Left" Margin="843,167,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="scoreLabelB" Content="Team B:" HorizontalAlignment="Left" Margin="843,198,0,0" VerticalAlignment="Top"/>
+        <Label Content="Team A" FontWeight="Bold" HorizontalAlignment="Left" Margin="843,167,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scoreLabelA" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="895,167,0,0" VerticalAlignment="Top" Width="20"/>
+        <Label Content="Team B" FontWeight="Bold" HorizontalAlignment="Left" Margin="843,198,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scoreLabelB" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="895,198,0,0" VerticalAlignment="Top" Width="20"/>
         <Button Content="Disconnect" HorizontalAlignment="Left" Margin="843,99,0,0" VerticalAlignment="Top" Width="65" Height="20" Click="CloseConnection"/>
         <Label Content="Score" HorizontalAlignment="Left" Margin="843,136,0,0" VerticalAlignment="Top"/>
         <TextBox Name="IPBox" HorizontalAlignment="Left" Height="23" Margin="843,10,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="81"/>

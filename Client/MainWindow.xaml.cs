@@ -40,7 +40,7 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
-            this.shapes = new Ellipse[4];
+            this.shapes = new Ellipse[Game.EntityAttrsSize];
             InitCanvas();
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
@@ -50,8 +50,16 @@ namespace Client
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (cc != null)
-                UpdateCanvas();
+            if (cc == null)
+                return;
+            UpdateCanvas();
+            UpdateScore();
+        }
+
+        private void UpdateScore()
+        {
+            scoreLabelA.Content = cc.ScoreA.ToString();
+            scoreLabelB.Content = cc.ScoreB.ToString();
         }
 
 
@@ -102,7 +110,6 @@ namespace Client
                 if (keyS)
                     playerMovement = PlayerDir.Right;
             }
-            //TODO wyslac ruch do serwera
             this.cc.playerMovement = playerMovement;
         }
 
@@ -115,7 +122,7 @@ namespace Client
 
         public void InitCanvas()
         {
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < Game.EntityAttrsSize; i++)
             {
                 var myEllipse = new Ellipse();
 
@@ -168,19 +175,15 @@ namespace Client
             {
                 if (attributes[i] == null)
                 {
-                    if(shapes[i].Width > 0)
-                    {
-                        shapes[i].Width = 0;
-                        shapes[i].Height = 0;
-                    }
+                    if (!shapes[i].IsVisible())
+                        shapes[i].Hide();
                     continue;
                 }
 
                 Ellipse shape = shapes.ElementAt(i);
                 EntityAttr attribute = attributes.ElementAt(i);
 
-                shape.SetValue(Canvas.TopProperty, attribute.Position.First);
-                shape.SetValue(Canvas.LeftProperty, attribute.Position.Second);
+                SetShapePosition(shape, attribute.Position);
 
                 var mySolidColorBrush = new SolidColorBrush(attribute.GetColor());
                 shape.Fill = mySolidColorBrush;
@@ -189,10 +192,15 @@ namespace Client
                     shape.Stroke = Brushes.White;
                     shape.StrokeThickness = 2;
                 }
-                    
-                shape.Width = attribute.Size;
-                shape.Height = attribute.Size;
+
+                shape.SetSize(attribute.Size);
             }
+        }
+
+        private void SetShapePosition(Shape shape, Pair position)
+        {
+            shape.SetValue(Canvas.TopProperty, position.First);
+            shape.SetValue(Canvas.LeftProperty, position.Second);
         }
 
         private void CloseConnection(object sender, object e)
