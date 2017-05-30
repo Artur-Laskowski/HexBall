@@ -79,13 +79,23 @@ namespace Client
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            CheckMove();
+        }
+
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            CheckMove();
+        }
+        private void CheckMove()
+        {
             if (this.cc == null)
                 return;
             var keyD = Keyboard.IsKeyDown(Key.D);
             var keyW = Keyboard.IsKeyDown(Key.W);
             var keyA = Keyboard.IsKeyDown(Key.A);
             var keyS = Keyboard.IsKeyDown(Key.S);
-            //var space = Keyboard.IsKeyDown(Key.Space);
+            
             PlayerDir playerMovement = PlayerDir.NoMove;
             if (keyD)
             {
@@ -113,13 +123,6 @@ namespace Client
                     playerMovement = PlayerDir.Right;
             }
             this.cc.playerMovement = playerMovement;
-        }
-
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (this.cc == null)
-                return;
-            this.cc.playerMovement = PlayerDir.NoMove;
         }
 
 
