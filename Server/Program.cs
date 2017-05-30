@@ -10,7 +10,9 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            SocketService ss = new SocketService(7172, "");
+            GameService gs = new GameService();
+            gs.Start();
+            SocketService ss = new SocketService(7172, "",gs.game);
             ss.Start();
         }
     }

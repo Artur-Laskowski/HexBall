@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Client;
-
 namespace HexBall
 {
     public enum Team
@@ -65,7 +63,7 @@ namespace HexBall
                 case PlayerDir.NoMove:
                     break;
                 default:
-                    velocity.Set(0, 0);
+                    velocity.Set(-this.game.MovementSpeed / Math.Sqrt(2), -this.game.MovementSpeed / Math.Sqrt(2));
                     break;
             }
             AddVelocity(velocity);

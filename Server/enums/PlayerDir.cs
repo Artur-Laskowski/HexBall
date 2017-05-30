@@ -1,4 +1,4 @@
-﻿namespace Client
+﻿namespace HexBall
 {
     public enum PlayerDir
     {

@@ -45,16 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameService.cs" />
     <Compile Include="model\EntityAttr.cs" />
     <Compile Include="model\Ball.cs" />
     <Compile Include="ClientService.cs" />
     <Compile Include="enums\Colour.cs" />
     <Compile Include="model\Entity.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="Pair.cs" />
+    <Compile Include="model\Message.cs" />
+    <Compile Include="model\Pair.cs" />
     <Compile Include="model\Player.cs" />
-    <Compile Include="PlayerDir.cs" />
+    <Compile Include="enums\PlayerDir.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="enums\Score.cs" />

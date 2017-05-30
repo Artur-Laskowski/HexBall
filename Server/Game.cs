@@ -27,11 +27,13 @@ namespace HexBall
         /// </summary>
         public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
 
+        public EntityAttr[] Attributes { get; set; }
+
         /// <summary>
         ///     List of all entities. TODO make it static so it can be easily accessed by entites when colliding?
         /// </summary>
         public Ball Ball;
-        public List<Player> Players;
+        public Player[] Players;
 
         public int ScoreA = 0;
         public int ScoreB = 0;
@@ -42,7 +44,8 @@ namespace HexBall
 
         public Game()
         {
-            Players = new List<Player>();
+            Players = new Player[4];
+            Attributes = new EntityAttr[4];
             AddBall();
         }
 
@@ -54,12 +57,47 @@ namespace HexBall
 
         public int AddPlayer()
         {
-            //TODO start position
-            var position = GetFreePostion();
+            Pair teamSizes = this.GetTeamsSizes();
+            if (teamSizes.First + teamSizes.Second == 4)
+                return -1;
+
             var color = GetNewPlayerColor();
+            Pair mapCenter = GetCenterOfBoard();
+            Pair position;
+            int index;
+            //team A jest po lewej stronie planszy
+            //gracze maja indeksy 0 i 1
+            //team B po prawej stronie
+            //gracze maja indeksy 2 i 3
+            if (color == TeamAColor)
+            {
+                if (this.Players[0] == null)
+                {
+                    position = new Pair(mapCenter.First - mapCenter.First / 2, mapCenter.Second - Player.Dimension);
+                    index = 0;
+                }
+                else
+                {
+                    position = new Pair(mapCenter.First - mapCenter.First / 2, mapCenter.Second + Player.Dimension);
+                    index = 1;
+                }
+            }
+            else
+            {
+                if (this.Players[2] == null)
+                {
+                    position = new Pair(mapCenter.First + mapCenter.First / 2, mapCenter.Second - Player.Dimension);
+                    index = 2;
+                }
+                else
+                {
+                    position = new Pair(mapCenter.First + mapCenter.First / 2, mapCenter.Second + Player.Dimension);
+                    index = 3;
+                }
+            }
             var player = new Player(position, Player.MaxSpeed, Player.Dimension, color) { game = this };
-            Players.Add(player);
-            return Players.IndexOf(player);
+            this.Players[index] = player;
+            return index;
         }
 
         private Color GetNewPlayerColor()
@@ -70,7 +108,7 @@ namespace HexBall
 
         private void RemovePlayer(int index)
         {
-            //TODO implement
+            this.Players[index] = null;
         }
 
         private Pair GetTeamsSizes()
@@ -78,6 +116,8 @@ namespace HexBall
             var size = new Pair(0, 0);
             foreach (var player in Players)
             {
+                if (player == null)
+                    continue;
                 if (player.GetTeam() == Team.A)
                     size.First++;
                 else
@@ -98,14 +138,6 @@ namespace HexBall
             var x = random.Next(Size.Item1);
             var y = random.Next(Size.Item2);
             return new Pair(x, y);
-        }
-
-        public List<EntityAttr> GetAttributies()
-        {
-            var attributies = Players.Select(player => player.GetAttributies()).ToList();
-            attributies.Add(Ball.GetAttributies());
-
-            return attributies;
         }
 
         /// <summary>
@@ -145,6 +177,29 @@ namespace HexBall
         {
             //TODO zabezpieczyć przed położeniem piłki na środku gdy jest tam gracz
             Ball.Position = GetCenterOfBoard();
+        }
+
+        public void UpdateMovemenet(PlayerDir mov, int index)
+        {
+            Players[index].playerAction = mov;
+        }
+
+        public void Update(bool movement = true,PlayerDir mov= PlayerDir.NoMove, int index=-1)
+        {
+            lock (Attributes)
+            {
+                //game update
+                Attributes = new EntityAttr[4];
+
+                //Po kolei aktualizujemy obiekty i dodajemy ich atrybuty do listy, z której będą czytane podczas rysowania.
+                for (int i = 0; i < Players.Length; i++)
+                {
+                    if (Players[i] == null)
+                        continue;
+                    Players[i].Update(0.04);
+                    Attributes[i] = Players[i].GetAttributies();
+                }
+            }
         }
     }
 }

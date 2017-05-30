@@ -28,7 +28,7 @@ namespace Server
         /// <summary>
         /// serwer przy wysylaniu elementów canvas 
         /// </summary>
-        Canvas,
+        Attributes,
         /// <summary>
         /// serwer po nadaniu klientowi indeksu gracza
         /// </summary>
@@ -36,7 +36,11 @@ namespace Server
         /// <summary>
         /// serwer przy golu
         /// </summary>
-        Goal
+        Goal,
+        /// <summary>
+        /// wszystkie miejsca zajete
+        /// </summary>
+        NoSlots
     }
 
     [Serializable]

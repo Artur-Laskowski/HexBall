@@ -22,7 +22,7 @@ namespace Client
 
         public int playerIndex { get; set; }
 
-        private List<EntityAttr> attributes { get; set; }
+        private EntityAttr[] attributes { get; set; }
 
         public PlayerDir playerMovement { get; set; }
 
@@ -32,7 +32,7 @@ namespace Client
             bytesOut = new byte[bufferSize];
 
             this.playerMovement = PlayerDir.NoMove;
-            this.attributes = new List<EntityAttr>();
+            this.attributes = new EntityAttr[4];
 
             this.socket = new TcpClient(ip, port);
 
@@ -44,7 +44,7 @@ namespace Client
         /// 
         /// </summary>
         /// <param name="get">true - odczytujemy attributes, false - zapisujemy</param>
-        public List<EntityAttr> GetSetAttributes(bool get = true, List<EntityAttr> newAttributes = null)
+        public EntityAttr[] GetSetAttributes(bool get = true, EntityAttr[] newAttributes = null)
         {
             //semafor
             lock (this.attributes)
@@ -64,15 +64,11 @@ namespace Client
             while (true)
             {
                 msg = ReceiveMessage();
-                if (msg == null)
-                {
-                    continue;
-                }
 
                 switch (msg.type)
                 {
-                    case MessageType.Canvas:
-                        var attrs = ((List<EntityAttr>) msg.data);
+                    case MessageType.Attributes:
+                        var attrs = ((EntityAttr[]) msg.data);
                         this.GetSetAttributes(false, attrs);
                         break;
 
@@ -82,6 +78,7 @@ namespace Client
 
                 //wyslij movement
                 SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
+                Thread.Sleep(100);
             }
         }
 

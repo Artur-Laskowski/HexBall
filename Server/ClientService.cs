@@ -24,15 +24,15 @@ namespace Server
 
         private int clientId;
         private int playerIndex;
-        
-        private List<EntityAttr> shapes;
+
+        private EntityAttr[] attribs;
 
         public ClientService(TcpClient inClientSocket, int nmbr, Game g)
         {
             this.socket = inClientSocket;
             this.clientId = nmbr;
             this.game = g;
-            this.shapes = new List<EntityAttr>();
+            this.attribs = new EntityAttr[4];
 
             this.socket.NoDelay = true;
 
@@ -49,20 +49,25 @@ namespace Server
 
             Message msg;
 
-            this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.shapes });
+            this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
 
             while (true)
             {
                 msg = this.ReceiveMessage();
-                shapes = game.GetAttributies();
-                this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Canvas, data = this.shapes });
+                //this.game.Update(movement: true, index: this.playerIndex, mov: (PlayerDir)msg.data);
+                this.game.UpdateMovemenet((PlayerDir)msg.data, this.playerIndex);
+                attribs = game.Attributes;
+                this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
             }
         }
 
         private void SendPlayerIndex()
         {
-            var index = game.AddPlayer();
-            this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = index });
+            this.playerIndex = game.AddPlayer();
+            if (this.playerIndex >= 0)
+                this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.Player, data = this.playerIndex });
+            else
+                this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.NoSlots });
         }
 
         private void SendMessage(Message msg)

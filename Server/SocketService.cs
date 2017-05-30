@@ -18,7 +18,7 @@ namespace Server
         private Game game { get; set; }
         private int connections { get; set; } = 0;
 
-        public SocketService(int port, string ip)
+        public SocketService(int port, string ip, Game g)
         {
             //server socket obj
             if (String.IsNullOrEmpty(ip))
@@ -32,17 +32,13 @@ namespace Server
             }
             //client socket obj
             this.clients = new List<ClientService>();
+
+            this.game = g;
         }
 
         public void Start()
         {
-            this.game = new Game();
             this.serverSocket.Start();
-
-            /*
-            Thread gameThread = new Thread(game.Update);
-            gameThread.Start();
-            */
 
             Thread listenerThread = new Thread(Listener);
             listenerThread.Start();
@@ -56,7 +52,7 @@ namespace Server
             {
                 var clientSocket = serverSocket.AcceptTcpClient();
                 connections++;
-                //Console.WriteLine(" >> " + "user " + connections + " connected");
+                Console.WriteLine(" >> " + "user " + connections + " connected");
                 this.clients.Add(new ClientService(clientSocket,connections,game));
             }
         }

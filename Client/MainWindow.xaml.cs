@@ -29,8 +29,8 @@ namespace Client
 
         //Game.cs
         public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
-        public List<EntityAttr> attributes { get; set; }
-        public List<Ellipse> shapes { get; set; }
+        public EntityAttr[] attributes { get; set; }
+        public Ellipse[] shapes { get; set; }
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
 
@@ -40,6 +40,7 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+            this.shapes = new Ellipse[4];
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(10000 / 60);
@@ -101,6 +102,7 @@ namespace Client
                     playerMovement = PlayerDir.Right;
             }
             //TODO wyslac ruch do serwera
+            this.cc.playerMovement = playerMovement;
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -112,6 +114,34 @@ namespace Client
 
         public void InitCanvas()
         {
+            for (var i = 0; i < 4; i++)
+            {
+                var myEllipse = new Ellipse();
+
+                // Create a SolidColorBrush with a red color to fill the 
+                // Ellipse with.
+                var mySolidColorBrush = new SolidColorBrush { Color = Color.FromArgb(255, 255, 255, 0) };
+
+                // Describes the brush's color using RGB values. 
+                // Each value has a range of 0-255.
+                myEllipse.Fill = mySolidColorBrush;
+                myEllipse.StrokeThickness = 2;
+                myEllipse.Stroke = Brushes.Black;
+
+                // Set the width and height of the Ellipse.
+                myEllipse.Width = 0;
+                myEllipse.Height = 0; //All 5 possible objects
+
+                //myEllipse.SetValue(Canvas.TopProperty, 10);
+                //myEllipse.SetValue(Canvas.LeftProperty, 10);
+
+                shapes[i] = myEllipse;
+
+                canv.Children.Add(myEllipse);
+            }
+
+
+
             AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
             AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
         }
@@ -129,29 +159,31 @@ namespace Client
             goal.SetValue(Canvas.LeftProperty, startPair.First);
         }
 
-        private void DrawEntityShape(EntityAttr attr)
-        {
-            var entityEllipse = new Ellipse
-            {
-                Stroke = Brushes.Black,
-                Fill = new SolidColorBrush(attr.GetColor())
-            };
-            entityEllipse.SetValue(Canvas.TopProperty, attr.Position.First);
-            entityEllipse.SetValue(Canvas.LeftProperty, attr.Position.Second);
-            entityEllipse.Width = attr.Size;
-            entityEllipse.Height = attr.Size;
-            
-            //TODO bardzo zle zrobione
-            canv.Children.Add(entityEllipse);
-        }
+
         public void UpdateCanvas()
         {
-             attributes = this.cc.GetSetAttributes();
-
-            for (var i = 0; i < attributes.Count; i++)
+            attributes = this.cc.GetSetAttributes();
+            for (var i = 0; i < attributes.Length; i++)
             {
-                var attribute = attributes.ElementAt(i);
-                DrawEntityShape(attribute);
+                if (shapes[i] == null || attributes[i] == null)
+                    continue;
+
+                Ellipse shape = shapes.ElementAt(i);
+                EntityAttr attribute = attributes.ElementAt(i);
+
+                shape.SetValue(Canvas.TopProperty, attribute.Position.First);
+                shape.SetValue(Canvas.LeftProperty, attribute.Position.Second);
+
+                var mySolidColorBrush = new SolidColorBrush(attribute.GetColor());
+                shape.Fill = mySolidColorBrush;
+                if (i == playerIndex)
+                {
+                    shape.Stroke = Brushes.White;
+                    shape.StrokeThickness = 2;
+                }
+                    
+                shape.Width = attribute.Size;
+                shape.Height = attribute.Size;
             }
         }
 
