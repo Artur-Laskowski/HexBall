@@ -36,7 +36,7 @@ namespace Server
         /// <summary>
         /// serwer przy golu
         /// </summary>
-        Goal,
+        Score,
         /// <summary>
         /// wszystkie miejsca zajete
         /// </summary>
