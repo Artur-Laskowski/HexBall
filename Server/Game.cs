@@ -49,11 +49,6 @@ namespace HexBall
             AddBall();
         }
 
-        private void AddBall()
-        {
-            var boardCenter = GetCenterOfBoard();
-            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
-        }
 
         public int AddPlayer()
         {
@@ -100,15 +95,21 @@ namespace HexBall
             return index;
         }
 
+        public void RemovePlayer(int index)
+        {
+            this.Players[index] = null;
+        }
+
+        private void AddBall()
+        {
+            var boardCenter = GetCenterOfBoard();
+            Ball = new Ball(boardCenter, Ball.MaxSpeed, Ball.Dimension);
+        }
+
         private Color GetNewPlayerColor()
         {
             var teamSizes = GetTeamsSizes();
             return teamSizes.First == teamSizes.Second ? TeamAColor : TeamBColor;
-        }
-
-        private void RemovePlayer(int index)
-        {
-            this.Players[index] = null;
         }
 
         private Pair GetTeamsSizes()
@@ -186,10 +187,8 @@ namespace HexBall
 
         public void Update(bool movement = true,PlayerDir mov= PlayerDir.NoMove, int index=-1)
         {
-            List<int> sda = new List<int>();
-            lock (sda)
+            lock (Attributes)
             {
-
                 if (movement)
                 {
                     this.Players[index].playerAction = mov;

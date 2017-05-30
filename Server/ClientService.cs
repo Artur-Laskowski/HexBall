@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HexBall;
 using System.Windows.Media;
+using System.Net.NetworkInformation;
 
 namespace Server
 {
@@ -27,6 +28,8 @@ namespace Server
 
         private EntityAttr[] attribs;
 
+        private Thread connectionThread;
+
         public ClientService(TcpClient inClientSocket, int nmbr, Game g)
         {
             this.socket = inClientSocket;
@@ -34,15 +37,15 @@ namespace Server
             this.game = g;
             this.attribs = new EntityAttr[4];
 
-            this.socket.NoDelay = true;
+            //this.socket.NoDelay = true;
 
             bytesIn = new byte[bufferSize];
             bytesOut = new byte[bufferSize];
-            Thread connectionThread = new Thread(ConnectionHandler);
+            connectionThread = new Thread(ConnectionHandler);
             connectionThread.Start();
         }
 
-        private async void ConnectionHandler()
+        private void ConnectionHandler()
         {
             ns = this.socket.GetStream();
             this.SendPlayerIndex();
@@ -54,11 +57,32 @@ namespace Server
             while (true)
             {
                 msg = this.ReceiveMessage();
-                this.game.Update(movement: true, index: this.playerIndex, mov: (PlayerDir)msg.data);
+                HandleMessage(msg);
                 attribs = game.Attributes;
                 this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
-                //await Task.Delay(100);
             }
+        }
+
+        private void HandleMessage(Message msg)
+        {
+            switch (msg.type)
+            {
+                case MessageType.Movement:
+                    this.game.Update(movement: true, index: this.playerIndex, mov: (PlayerDir)msg.data);
+                    break;
+                case MessageType.Disconnect:
+                    Disconnect();
+                    
+                    break;
+            }
+        }
+
+        private void Disconnect()
+        {
+            this.socket.Close();
+            this.game.RemovePlayer(this.playerIndex);
+            Console.WriteLine(" >> " + "user disconnected");
+            this.connectionThread.Abort();
         }
 
         private void SendPlayerIndex()
@@ -87,8 +111,6 @@ namespace Server
                 remaining -= bytes;
             }
 
-
-
             return (Message)Serializer.ByteArrayToObject(bytesIn);
         }
 
@@ -97,5 +119,7 @@ namespace Server
             this.socket.GetStream().Close();
             this.socket.Client.Disconnect(false);
         }
+
+
     }
 }

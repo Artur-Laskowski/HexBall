@@ -53,7 +53,7 @@ namespace Server
                 var clientSocket = serverSocket.AcceptTcpClient();
                 connections++;
                 Console.WriteLine(" >> " + "user " + connections + " connected");
-                this.clients.Add(new ClientService(clientSocket,connections,game));
+                this.clients.Add(new ClientService(clientSocket, connections, game));
             }
         }
     }

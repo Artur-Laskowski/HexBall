@@ -166,8 +166,15 @@ namespace Client
             attributes = this.cc.GetSetAttributes();
             for (var i = 0; i < attributes.Length; i++)
             {
-                if (shapes[i] == null || attributes[i] == null)
+                if (attributes[i] == null)
+                {
+                    if(shapes[i].Width > 0)
+                    {
+                        shapes[i].Width = 0;
+                        shapes[i].Height = 0;
+                    }
                     continue;
+                }
 
                 Ellipse shape = shapes.ElementAt(i);
                 EntityAttr attribute = attributes.ElementAt(i);
@@ -188,5 +195,9 @@ namespace Client
             }
         }
 
+        private void CloseConnection(object sender, object e)
+        {
+            this.cc.CloseConnection();
+        }
     }
 }

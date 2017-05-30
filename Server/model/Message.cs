@@ -40,7 +40,11 @@ namespace Server
         /// <summary>
         /// wszystkie miejsca zajete
         /// </summary>
-        NoSlots
+        NoSlots,
+        /// <summary>
+        /// wi@adomix
+        /// </summary>
+        Disconnect
     }
 
     [Serializable]

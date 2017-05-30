@@ -19,6 +19,7 @@ namespace Client
         private byte[] bytesIn;
         private byte[] bytesOut;
         private const int bufferSize = 8192;
+        private Thread connectionThread;
 
         public int playerIndex { get; set; }
 
@@ -36,7 +37,7 @@ namespace Client
 
             this.socket = new TcpClient(ip, port);
 
-            Thread connectionThread = new Thread(ConnectionHandler);
+            connectionThread = new Thread(ConnectionHandler);
             connectionThread.Start();
         }
 
@@ -58,30 +59,34 @@ namespace Client
         private void ConnectionHandler()
         {
             ns = this.socket.GetStream();
+
+            //player index
             Message msg;
             msg = ReceiveMessage();
             this.playerIndex = (int)msg.data;
+
             while (true)
             {
                 msg = ReceiveMessage();
-
-                switch (msg.type)
-                {
-                    case MessageType.Attributes:
-                        var attrs = ((EntityAttr[]) msg.data);
-                        this.GetSetAttributes(false, attrs);
-                        break;
-
-                    case MessageType.Goal:
-                        break;
-                }
-
-                //wyslij movement
+                HandleMessage(msg);
                 SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
-                //Thread.Sleep(100);
             }
         }
 
+        private void HandleMessage(Message msg)
+        {
+            if (msg == null)
+                return;
+            switch (msg.type)
+            {
+                case MessageType.Attributes:
+                    var attrs = ((EntityAttr[])msg.data);
+                    this.GetSetAttributes(false, attrs);
+                    break;
+                case MessageType.Goal:
+                    break;
+            }
+        }
 
         private void SendMessage(Message msg)
         {
@@ -91,15 +96,29 @@ namespace Client
 
         private Message ReceiveMessage()
         {
-            int remaining = bufferSize;
-            int pos = 0;
-            while (remaining != 0)
+            try
             {
-                int bytes = ns.Read(bytesIn, pos, remaining);
-                pos += bytes;
-                remaining -= bytes;
+                int remaining = bufferSize;
+                int pos = 0;
+                while (remaining != 0)
+                {
+                    int bytes = ns.Read(bytesIn, pos, remaining);
+                    pos += bytes;
+                    remaining -= bytes;
+                }
+                return (Message)Serializer.ByteArrayToObject(bytesIn);
             }
-            return (Message)Serializer.ByteArrayToObject(bytesIn);
+            catch (Exception e)
+            {
+
+            }
+            return null;
+        }
+
+        public void CloseConnection()
+        {
+            SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Disconnect });
+            connectionThread.Abort();
         }
     }
 }
