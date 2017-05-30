@@ -179,7 +179,7 @@ namespace Client
             {
                 if (attributes[i] == null)
                 {
-                    if (!shapes[i].IsVisible())
+                    if (shapes[i].IsVisible())
                         shapes[i].Hide();
                     continue;
                 }
