@@ -202,7 +202,7 @@ namespace HexBall
                 {
                     if (Players[i] == null)
                         continue;
-                    Players[i].Update(1);
+                    Players[i].Update(3);
                     attr[i] = Players[i].GetAttributies();
                 }
                 this.Attributes = attr;

@@ -71,6 +71,8 @@ namespace Client
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            if (this.cc == null)
+                return;
             var keyD = Keyboard.IsKeyDown(Key.D);
             var keyW = Keyboard.IsKeyDown(Key.W);
             var keyA = Keyboard.IsKeyDown(Key.A);
@@ -108,6 +110,8 @@ namespace Client
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
+            if (this.cc == null)
+                return;
             this.cc.playerMovement = PlayerDir.NoMove;
         }
 
