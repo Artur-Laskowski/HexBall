@@ -14,7 +14,7 @@ namespace Server
             string asd = IPAddress.Any.ToString();
             GameService gs = new GameService();
             gs.Start();
-            SocketService ss = new SocketService(7172, asd, gs.game);
+            SocketService ss = new SocketService(7172, "", gs.game);
             ss.Start();
         }
     }
