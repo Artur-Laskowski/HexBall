@@ -24,7 +24,6 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int playerIndex;
         private ConnectionController cc;
 
         //Game.cs
@@ -174,7 +173,7 @@ namespace Client
 
                 var mySolidColorBrush = new SolidColorBrush(attribute.GetColor());
                 shape.Fill = mySolidColorBrush;
-                if (i == playerIndex)
+                if (i == cc.playerIndex)
                 {
                     shape.Stroke = Brushes.White;
                     shape.StrokeThickness = 2;

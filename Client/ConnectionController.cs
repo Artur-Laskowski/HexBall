@@ -70,13 +70,11 @@ namespace Client
             ns = this.socket.GetStream();
 
             //player index
-            Message msg;
-            msg = ReceiveMessage();
-            this.playerIndex = (int)msg.data;
+
 
             while (true)
             {
-                msg = ReceiveMessage();
+                var msg = ReceiveMessage();
                 HandleMessage(msg);
                 if (msg.type != MessageType.Score)
                     SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
@@ -96,6 +94,9 @@ namespace Client
                 case MessageType.Score:
                     var scoredTeam = (Tuple<int, int>)msg.data;
                     UpdateScore(scoredTeam);
+                    break;
+                case MessageType.Player:
+                    playerIndex = (int)msg.data;
                     break;
             }
         }
