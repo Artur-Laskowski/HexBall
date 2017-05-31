@@ -28,14 +28,8 @@ namespace Client
         private ConnectionController cc;
 
         //Game.cs
-        public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
         public EntityAttr[] attributes { get; set; }
         public Ellipse[] shapes { get; set; }
-        public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
-        public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
-
-
-
 
         public MainWindow()
         {
@@ -158,8 +152,28 @@ namespace Client
 
 
             AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
+            AddGoalpostShape(Game.SlupekLewoGora.Item1, Game.SlupekLewoGora.Item2);
+            AddGoalpostShape(Game.SlupekLewoDol.Item1, Game.SlupekLewoDol.Item2);
+
             AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
+            AddGoalpostShape(Game.SlupekPrawoGora.Item1, Game.SlupekPrawoGora.Item2);
+            AddGoalpostShape(Game.SlupekPrawoDol.Item1, Game.SlupekPrawoDol.Item2);
         }
+
+        private void AddGoalpostShape(Pair startPair, Pair endPair)
+        {
+            var brush = new SolidColorBrush { Color = Colour.White };
+            var goal = new Rectangle
+            {
+                Fill = brush,
+                Width = Math.Abs(startPair.First - endPair.First),
+                Height = Math.Abs(startPair.Second - endPair.Second)
+            };
+            canv.Children.Add(goal);
+            goal.SetValue(Canvas.TopProperty, startPair.Second);
+            goal.SetValue(Canvas.LeftProperty, startPair.First);
+        }
+
         private void AddGoalShape(Pair startPair, Pair endPair)
         {
             var brush = new SolidColorBrush { Color = Colour.YellowTransparent };

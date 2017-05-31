@@ -151,6 +151,9 @@ namespace HexBall
             if (!this.game.IsInBounds(proposedPos, Margin))
                 return;
 
+            if (this.game.IsCollidedGoalposts(proposedPos, Size))
+                return;
+
             //player collision
             foreach (var otherPlayer in this.game.Players)
             {
