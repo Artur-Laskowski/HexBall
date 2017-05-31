@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Title="MainWindow" Height="463.444" Width="1040.547" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Closing="CloseConnection">
+
     <Grid Margin="0,0,3.6,100.2">
         <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="948,76,0,0" VerticalAlignment="Top" Width="65" Click="Connect_Server"/>
         <Canvas x:Name="canv" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="880" Background="LightGray" Margin="0,0,0,0">
@@ -24,6 +25,84 @@
                     <SolidColorBrush>
                         <SolidColorBrush.Color>
                             <Color A="200" R="200" G="200" B="0" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            
+            <!--            Słupki bramek-->
+            <!--            Right Up-->
+            <Ellipse Width="6" Height="6" Canvas.Top="147" Canvas.Right="0" Name="RightUpStroke" RenderTransformOrigin="-3.7,0.8" Canvas.Left="840">
+                <Ellipse.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Rectangle Width="37" Height="6" Canvas.Top="147" Canvas.Right="0" RenderTransformOrigin="-3.7,0.8" Canvas.Left="843">
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <!--            Right Dwon-->
+            <Ellipse Width="6" Height="6" Canvas.Top="247" Canvas.Right="0" RenderTransformOrigin="-3.7,0.8" Canvas.Left="840">
+                <Ellipse.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Rectangle Width="37" Height="6" Canvas.Top="247" Canvas.Right="0" RenderTransformOrigin="-3.7,0.8" Canvas.Left="843">
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <!--            Left Up-->
+            <Ellipse Width="6" Height="6" Canvas.Top="147" Canvas.Left="34" RenderTransformOrigin="-3.7,0.8" >
+                <Ellipse.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Rectangle Width="37" Height="6" Canvas.Top="147"  Name="RightUp" RenderTransformOrigin="-3.7,0.8" >
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <!--            Left Dwon-->
+            <Ellipse Width="6" Height="6" Canvas.Top="247" RenderTransformOrigin="-3.7,0.8" Canvas.Left="34">
+                <Ellipse.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Rectangle Width="37" Height="6" Canvas.Top="247" RenderTransformOrigin="-3.7,0.8" >
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="255" R="47" G="79" B="49" />
                         </SolidColorBrush.Color>
                     </SolidColorBrush>
                 </Rectangle.Fill>
