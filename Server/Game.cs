@@ -135,10 +135,13 @@ namespace HexBall
             return a.First >= 40 && a.First <= Size.Item1 && a.Second >= 40 && a.Second <= Size.Item2;
         }
 
-        public bool IsInBounds(Pair a, int margin)
+        public int IsInBounds(Pair a, int margin)
         {
-            return a.First >= 0 && a.First <= Size.Item2- margin && a.Second >= 40 &&
-                   a.Second <= Size.Item1 - margin - 40;
+            if (a.First < 0 || a.First > Size.Item2 - margin)
+                return 1;
+            if (a.Second < 40 && a.Second > Size.Item1 - margin - 40)
+                return 2;
+            return 0;
         }
 
         public bool IsCollidedGoalposts(Pair a, int size)
