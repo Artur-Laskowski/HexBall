@@ -59,12 +59,10 @@ namespace Client
             }
         }
 
-        public void UpdateScore(Team team)
+        public void UpdateScore(Tuple<int, int> score)
         {
-            if (team == Team.A)
-                ScoreA++;
-            else
-                ScoreB++;
+            ScoreA = score.Item1;
+            ScoreB = score.Item2;
         }
 
         private void ConnectionHandler()
@@ -80,7 +78,8 @@ namespace Client
             {
                 msg = ReceiveMessage();
                 HandleMessage(msg);
-                SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
+                if (msg.type != MessageType.Score)
+                    SendMessage(new Message { author = MessageAuthor.Client, type = MessageType.Movement, data = this.playerMovement });
             }
         }
 
@@ -94,8 +93,8 @@ namespace Client
                     var attrs = ((EntityAttr[])msg.data);
                     this.GetSetAttributes(false, attrs);
                     break;
-                case MessageType.Goal:
-                    var scoredTeam = (Team)msg.data;
+                case MessageType.Score:
+                    var scoredTeam = (Tuple<int, int>)msg.data;
                     UpdateScore(scoredTeam);
                     break;
             }

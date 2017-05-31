@@ -58,18 +58,15 @@ namespace Server
             {
                 msg = this.ReceiveMessage();
                 HandleMessage(msg);
-                GoalMessage();
+                ScoreMessage();
                 attribs = game.Attributes;
                 this.SendMessage(new Message { author = MessageAuthor.Server, type = MessageType.Attributes, data = this.attribs });
             }
         }
 
-        private void GoalMessage()
+        private void ScoreMessage()
         {
-            Team teamScore;
-            var hasScored = game.HasScored(out teamScore);
-            if(hasScored)
-                SendGoal(teamScore);
+            SendScore();
         }
 
         private void HandleMessage(Message msg)
@@ -81,7 +78,7 @@ namespace Server
                     break;
                 case MessageType.Disconnect:
                     Disconnect();
-                    
+
                     break;
             }
         }
@@ -103,9 +100,10 @@ namespace Server
                 this.SendMessage(new Server.Message { author = MessageAuthor.Server, type = MessageType.NoSlots });
         }
 
-        private void SendGoal(Team team)
+        private void SendScore()
         {
-            this.SendMessage(new Server.Message(){author = MessageAuthor.Server, type = MessageType.Goal, data = team});
+            var score = new Tuple<int, int>(game.ScoreA, game.ScoreB);
+            this.SendMessage(new Server.Message() { author = MessageAuthor.Server, type = MessageType.Score, data = score });
         }
 
         private void SendMessage(Message msg)
