@@ -14,11 +14,24 @@ namespace HexBall
 
         protected override void UpdatePosition(double time)
         {
-            base.UpdatePosition(time);
-            var result = game.HasScored(Position);
+            var proposedPos = new Pair
+            {
+                First = Position.First + Velocity.First * time,
+                Second = Position.Second + Velocity.Second * time
+            };
+            
+            var result = game.HasScored(proposedPos,Size);
             switch (result)
             {
                 case Score.NoScore:
+                    if (this.game.IsInBounds(proposedPos, Size))
+                    {
+                        Position = proposedPos;
+                    }else
+                    {
+                        Velocity.First = -Velocity.First*0.5;
+                        Velocity.Second = -Velocity.Second * 0.5;
+                    }
                     return;
 
                 case Score.ZoneAGoal:

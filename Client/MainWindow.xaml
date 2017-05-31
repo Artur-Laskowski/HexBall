@@ -5,23 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="463.444" Width="945.547" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Closing="CloseConnection">
+        Title="MainWindow" Height="463.444" Width="1040.547" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Closing="CloseConnection">
     <Grid Margin="0,0,3.6,100.2">
-        <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="843,74,0,0" VerticalAlignment="Top" Width="65" Click="Connect_Server"/>
-        <Canvas x:Name="canv" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="800" Background="#FF3E8344" Margin="0,0,0,0">
-            <Ellipse Height="200" Canvas.Left="300" Stroke="White" Canvas.Top="100" Width="200" StrokeThickness="4"/>
-            <Rectangle Height="400" Canvas.Left="400" Stroke="White" StrokeThickness="4" Width="4"/>
-            <Ellipse Height="12" Canvas.Left="396" Stroke="White" StrokeThickness="10" Canvas.Top="196" Width="12"/>
+        <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="948,76,0,0" VerticalAlignment="Top" Width="65" Click="Connect_Server"/>
+        <Canvas x:Name="canv" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="880" Background="LightGray" Margin="0,0,0,0">
+            <Rectangle Fill="#FF3E8344" Width="800" Height="400" Canvas.Left="40" Canvas.Right="40"></Rectangle>
+            <Rectangle Width="40" Height="100" Canvas.Top="150" Name="LeftGoal">
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="200" R="200" G="200" B="0" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle Width="40" Height="100" Canvas.Top="150" Canvas.Right="0" Name="RightGoal">
+                <Rectangle.Fill>
+                    <SolidColorBrush>
+                        <SolidColorBrush.Color>
+                            <Color A="200" R="200" G="200" B="0" />
+                        </SolidColorBrush.Color>
+                    </SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Ellipse Height="200" Canvas.Left="340" Stroke="White" Canvas.Top="100" Width="200" StrokeThickness="4"/>
+            <Rectangle Height="400" Canvas.Left="440" Stroke="White" StrokeThickness="4" Width="4"/>
+            <Ellipse Height="12" Canvas.Left="436" Stroke="White" StrokeThickness="10" Canvas.Top="196" Width="12"/>
         </Canvas>
-        <Label Content="Team A" FontWeight="Bold" HorizontalAlignment="Left" Margin="843,167,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="scoreLabelA" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="895,167,0,0" VerticalAlignment="Top" Width="20"/>
-        <Label Content="Team B" FontWeight="Bold" HorizontalAlignment="Left" Margin="843,198,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="scoreLabelB" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="895,198,0,0" VerticalAlignment="Top" Width="20"/>
-        <Button Content="Disconnect" HorizontalAlignment="Left" Margin="843,99,0,0" VerticalAlignment="Top" Width="65" Height="20" Click="CloseConnection"/>
-        <Label Content="Score" HorizontalAlignment="Left" Margin="843,136,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="IPBox" HorizontalAlignment="Left" Height="23" Margin="843,10,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="81"/>
-        <TextBox Name="PortBox" HorizontalAlignment="Left" Height="23" Margin="843,38,0,0" TextWrapping="Wrap" Text="7172" VerticalAlignment="Top" Width="81"/>
-        <Label Content="IP" HorizontalAlignment="Left" Margin="810,7,0,0" VerticalAlignment="Top" Width="33"/>
-        <Label Content="Port" HorizontalAlignment="Left" Margin="805,33,0,0" VerticalAlignment="Top"/>
+        <Label Content="Team A" FontWeight="Bold" HorizontalAlignment="Left" Margin="902,167,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scoreLabelA" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="978,167,0,0" VerticalAlignment="Top" Width="20"/>
+        <Label Content="Team B" FontWeight="Bold" HorizontalAlignment="Left" Margin="902,198,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="scoreLabelB" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="978,198,0,0" VerticalAlignment="Top" Width="20"/>
+        <Button Content="Disconnect" HorizontalAlignment="Left" Margin="948,101,0,0" VerticalAlignment="Top" Width="65" Height="20" Click="CloseConnection"/>
+        <Label Content="Score" HorizontalAlignment="Left" Margin="959,139,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="IPBox" HorizontalAlignment="Left" Height="23" Margin="948,10,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="81"/>
+        <TextBox Name="PortBox" HorizontalAlignment="Left" Height="23" Margin="948,38,0,0" TextWrapping="Wrap" Text="7172" VerticalAlignment="Top" Width="81"/>
+        <Label Content="IP" HorizontalAlignment="Left" Margin="910,10,0,0" VerticalAlignment="Top" Width="33"/>
+        <Label Content="Port" HorizontalAlignment="Left" Margin="910,36,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

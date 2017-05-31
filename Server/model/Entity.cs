@@ -8,7 +8,7 @@ namespace HexBall
     /// <summary>
     ///     Base class for handing collision, velocity, position, etc.
     /// </summary>
-    public class Entity
+    public abstract class Entity
     {
 
 
@@ -148,15 +148,14 @@ namespace HexBall
                 Second = Position.Second + Velocity.Second * time
             };
 
-            if (!this.game.IsInBounds(proposedPos, Margin))
-                return;
-
-            if (this.game.IsCollidedGoalposts(proposedPos.GetCenter(this.Size), Size, out var goal))
+            if (!this.game.IsInBounds(proposedPos, Size))
             {
-                var goalCenter = Pair.GetCenterOfPairs(goal);
-                this.GoalCollision(goalCenter);
+                Velocity.First = -Velocity.First;
+                Velocity.Second = -Velocity.Second;
+
+                return;
             }
-                
+
 
             //player collision
             foreach (var otherPlayer in this.game.Players)
@@ -175,7 +174,8 @@ namespace HexBall
 
             proposedPos.First = Position.First + Velocity.First * time;
             proposedPos.Second = Position.Second + Velocity.Second * time;
-            if (this.game.IsInBounds(proposedPos, Margin))
+
+            if (this.game.IsInBounds(proposedPos, Size))
             {
                 Position = proposedPos;
             }
@@ -219,19 +219,6 @@ namespace HexBall
         public virtual Team GetTeam()
         {
             return Team.None;
-        }
-
-        public bool HasCommonPartWith(Tuple<Pair, Pair> pair)
-        {
-            return Position.IsBetween(pair);
-        }
-
-        public void GoalCollision(Pair goalCenter)
-        {
-            var vector = goalCenter - Position;
-            vector.First = -vector.First;
-            vector.Second = -vector.Second;
-            AddVelocity(vector);
         }
     }
 }
