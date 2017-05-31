@@ -98,6 +98,9 @@ namespace Client
                 case MessageType.Player:
                     playerIndex = (int)msg.data;
                     break;
+                case MessageType.NoSlots:
+                    CloseConnection();
+                    break;
             }
         }
 

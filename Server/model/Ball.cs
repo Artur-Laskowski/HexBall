@@ -24,17 +24,20 @@ namespace HexBall
             switch (result)
             {
                 case Score.NoScore:
-                    int temp = this.game.IsInBounds(proposedPos, Size);
-                    if (temp==0)
+                    int bounce = this.game.IsInBounds(proposedPos, Size);
+                    if (bounce==0)
                     {
                         Position = proposedPos;
-                    }else if(temp==1)
+                    }else
                     {
-                        Velocity.First = -Velocity.First*0.5;
-                        Velocity.Second = -Velocity.Second * 0.5;
+                        if(bounce == 1)
+                        {
+                            Velocity.First = -Velocity.First * 0.5;
+                        }else
+                        {
+                            Velocity.Second = -Velocity.Second * 0.5;
+                        }
                     }
-                    else if(temp==2)
-
                     return;
 
                 case Score.ZoneAGoal:

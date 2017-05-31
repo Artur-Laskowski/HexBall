@@ -147,12 +147,18 @@ namespace HexBall
                 First = Position.First + Velocity.First * time,
                 Second = Position.Second + Velocity.Second * time
             };
-
-            if (!this.game.IsInBounds(proposedPos, Size))
+            int bounce = this.game.IsInBounds(proposedPos, Size);
+            if (bounce != 0)
             {
-                Velocity.First = -Velocity.First;
-                Velocity.Second = -Velocity.Second;
-
+                if(bounce == 1)
+                {
+                    Velocity.First = -Velocity.First;
+                }
+                else
+                {
+                    Velocity.Second = -Velocity.Second;
+                }
+                
                 return;
             }
 
@@ -175,7 +181,7 @@ namespace HexBall
             proposedPos.First = Position.First + Velocity.First * time;
             proposedPos.Second = Position.Second + Velocity.Second * time;
 
-            if (this.game.IsInBounds(proposedPos, Size))
+            if (this.game.IsInBounds(proposedPos, Size) == 0)
             {
                 Position = proposedPos;
             }
