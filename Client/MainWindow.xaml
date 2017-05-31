@@ -116,7 +116,6 @@
         <Label Content="Team B" FontWeight="Bold" HorizontalAlignment="Left" Margin="902,198,0,0" VerticalAlignment="Top"/>
         <Label x:Name="scoreLabelB" Content="" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="978,198,0,0" VerticalAlignment="Top" Width="20"/>
         <Button Name="DisconnectBtn" Content="Disconnect" HorizontalAlignment="Left" Margin="948,101,0,0" VerticalAlignment="Top" Width="65" Height="20" Click="CloseConnection" IsEnabled="False"/>
-        <Label Content="Score" HorizontalAlignment="Left" Margin="959,139,0,0" VerticalAlignment="Top"/>
         <TextBox Name="IPBox" HorizontalAlignment="Left" Height="23" Margin="948,10,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="81"/>
         <TextBox Name="PortBox" HorizontalAlignment="Left" Height="23" Margin="948,38,0,0" TextWrapping="Wrap" Text="7172" VerticalAlignment="Top" Width="81"/>
         <Label Content="IP" HorizontalAlignment="Left" Margin="910,10,0,0" VerticalAlignment="Top" Width="33"/>
