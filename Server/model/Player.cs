@@ -13,7 +13,7 @@ namespace HexBall
     public class Player : Entity
     {
         public static double MaxSpeed = 1;
-        public static int Dimension = 20;
+        public static int Dimension = 30;
 
         public PlayerDir playerAction;
 

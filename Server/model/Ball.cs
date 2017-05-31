@@ -5,7 +5,7 @@ namespace HexBall
     public class Ball : Entity
     {
         public static double MaxSpeed = 3;
-        public static int Dimension = 10;
+        public static int Dimension = 15;
         public Ball(Pair position, double maxSpeed, int size) : base(position, maxSpeed, size)
         {
             EntityColor = Colour.Black;

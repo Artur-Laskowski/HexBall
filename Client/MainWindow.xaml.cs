@@ -64,10 +64,14 @@ namespace Client
                 string ip = this.IPBox.Text;
                 int port = int.Parse(this.PortBox.Text);
                 cc = new ConnectionController(ip, port);
+                ConnectBtn.IsEnabled = false;
+                DisconnectBtn.IsEnabled = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Błąd");
+                ConnectBtn.IsEnabled = true;
+                DisconnectBtn.IsEnabled = false;
             }
         }
 
@@ -188,6 +192,8 @@ namespace Client
 
         private void CloseConnection(object sender, object e)
         {
+            DisconnectBtn.IsEnabled = false;
+            ConnectBtn.IsEnabled = true;
             this.cc.CloseConnection();
         }
     }
