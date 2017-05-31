@@ -32,10 +32,10 @@ namespace HexBall
                     {
                         if(bounce == 1)
                         {
-                            Velocity.First = -Velocity.First * 0.5;
+                            Velocity.First = -Velocity.First;
                         }else
                         {
-                            Velocity.Second = -Velocity.Second * 0.5;
+                            Velocity.Second = -Velocity.Second;
                         }
                     }
                     return;
