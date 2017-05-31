@@ -34,5 +34,7 @@ namespace HexBall
             Velocity.First = 0;
             Velocity.Second = 0;
         }
+
+
     }
 }

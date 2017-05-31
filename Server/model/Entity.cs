@@ -151,8 +151,12 @@ namespace HexBall
             if (!this.game.IsInBounds(proposedPos, Margin))
                 return;
 
-            if (this.game.IsCollidedGoalposts(proposedPos, Size))
-                return;
+            if (this.game.IsCollidedGoalposts(proposedPos.GetCenter(this.Size), Size, out var goal))
+            {
+                var goalCenter = Pair.GetCenterOfPairs(goal);
+                this.GoalCollision(goalCenter);
+            }
+                
 
             //player collision
             foreach (var otherPlayer in this.game.Players)
@@ -215,6 +219,19 @@ namespace HexBall
         public virtual Team GetTeam()
         {
             return Team.None;
+        }
+
+        public bool HasCommonPartWith(Tuple<Pair, Pair> pair)
+        {
+            return Position.IsBetween(pair);
+        }
+
+        public void GoalCollision(Pair goalCenter)
+        {
+            var vector = goalCenter - Position;
+            vector.First = -vector.First;
+            vector.Second = -vector.Second;
+            AddVelocity(vector);
         }
     }
 }
