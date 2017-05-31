@@ -24,13 +24,19 @@ namespace HexBall
             switch (result)
             {
                 case Score.NoScore:
-                    if (this.game.IsInBounds(proposedPos, Size))
+                    int bounce = this.game.IsInBounds(proposedPos, Size);
+                    if (bounce==0)
                     {
                         Position = proposedPos;
                     }else
                     {
-                        Velocity.First = -Velocity.First*0.5;
-                        Velocity.Second = -Velocity.Second * 0.5;
+                        if(bounce == 1)
+                        {
+                            Velocity.First = -Velocity.First * 0.5;
+                        }else
+                        {
+                            Velocity.Second = -Velocity.Second * 0.5;
+                        }
                     }
                     return;
 

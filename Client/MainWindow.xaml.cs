@@ -194,6 +194,12 @@ namespace Client
             DisconnectBtn.IsEnabled = false;
             ConnectBtn.IsEnabled = true;
             this.cc.CloseConnection();
+            foreach(var item in this.shapes)
+            {
+                item.Width = 0;
+                item.Height = 0;
+            }
+            //this.InitCanvas();
         }
     }
 }
