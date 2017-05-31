@@ -8,7 +8,7 @@ namespace HexBall
     /// <summary>
     ///     Base class for handing collision, velocity, position, etc.
     /// </summary>
-    public class Entity
+    public abstract class Entity
     {
 
 
@@ -148,11 +148,14 @@ namespace HexBall
                 Second = Position.Second + Velocity.Second * time
             };
 
-            if (!this.game.IsInBounds(proposedPos, Margin))
-                return;
+            if (!this.game.IsInBounds(proposedPos, Size))
+            {
+                Velocity.First = -Velocity.First;
+                Velocity.Second = -Velocity.Second;
 
-            if (this.game.IsCollidedGoalposts(proposedPos, Size))
                 return;
+            }
+
 
             //player collision
             foreach (var otherPlayer in this.game.Players)
@@ -171,7 +174,8 @@ namespace HexBall
 
             proposedPos.First = Position.First + Velocity.First * time;
             proposedPos.Second = Position.Second + Velocity.Second * time;
-            if (this.game.IsInBounds(proposedPos, Margin))
+
+            if (this.game.IsInBounds(proposedPos, Size))
             {
                 Position = proposedPos;
             }

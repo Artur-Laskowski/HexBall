@@ -30,7 +30,7 @@ namespace HexBall
         /// <summary>
         ///     Playing field's size.
         /// </summary>
-        public static readonly Tuple<int, int> Size = new Tuple<int, int>(800, 400);
+        public static readonly Tuple<int, int> Size = new Tuple<int, int>(880, 400);
 
         public EntityAttr[] Attributes { get; set; }
         private Team lastGoal = Team.None;
@@ -46,13 +46,6 @@ namespace HexBall
 
         public static readonly Tuple<Pair, Pair> ZoneA = new Tuple<Pair, Pair>(new Pair(0, Size.Item2 / 2 - 50), new Pair(40, Size.Item2 / 2 + 50));
         public static readonly Tuple<Pair, Pair> ZoneB = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, Size.Item2 / 2 - 50), new Pair(Size.Item1 - 0, Size.Item2 / 2 + 50));
-
-        public static readonly Tuple<Pair, Pair> SlupekLewoGora = new Tuple<Pair, Pair>(new Pair(0, ZoneA.Item1.Second - 4), new Pair(40, ZoneA.Item1.Second));
-        public static readonly Tuple<Pair, Pair> SlupekLewoDol = new Tuple<Pair, Pair>(new Pair(0, ZoneA.Item2.Second), new Pair(40, ZoneA.Item2.Second + 4));
-
-        public static readonly Tuple<Pair, Pair> SlupekPrawoGora = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, ZoneB.Item1.Second-4), new Pair(Size.Item1 - 0, ZoneB.Item1.Second));
-        public static readonly Tuple<Pair, Pair> SlupekPrawoDol = new Tuple<Pair, Pair>(new Pair(Size.Item1 - 40, ZoneB.Item2.Second), new Pair(Size.Item1 - 0, ZoneB.Item2.Second + 4));
-
         public Game()
         {
             Players = new Player[NumOfPlayers];
@@ -139,13 +132,13 @@ namespace HexBall
         /// <returns>bool - is in bounds</returns>
         public bool IsInBounds(Pair a)
         {
-            return a.First >= 0 && a.First <= Size.Item1 && a.Second >= 0 && a.Second <= Size.Item2;
+            return a.First >= 40 && a.First <= Size.Item1 && a.Second >= 40 && a.Second <= Size.Item2;
         }
 
         public bool IsInBounds(Pair a, int margin)
         {
-            return a.First >= margin && a.First <= Size.Item2 - margin && a.Second >= margin &&
-                   a.Second <= Size.Item1 - margin;
+            return a.First >= 0 && a.First <= Size.Item2- margin && a.Second >= 40 &&
+                   a.Second <= Size.Item1 - margin - 40;
         }
 
         public bool IsCollidedGoalposts(Pair a, int size)
@@ -153,15 +146,15 @@ namespace HexBall
             return false;
         }
 
-        public Score HasScored(Pair a)
+        public Score HasScored(Pair a, int size)
         {
-            if (a.First > ZoneA.Item1.Second && a.First < ZoneA.Item2.Second && a.Second > ZoneA.Item1.First &&
+            if (a.First > ZoneA.Item1.Second && a.First - size < ZoneA.Item2.Second && a.Second > ZoneA.Item1.First &&
                 a.Second < ZoneA.Item2.First)
             {
                 return Score.ZoneAGoal;
             }
 
-            if (a.First > ZoneB.Item1.Second && a.First < ZoneB.Item2.Second && a.Second > ZoneB.Item1.First &&
+            if (a.First > ZoneB.Item1.Second && a.First < ZoneB.Item2.Second && a.Second + size > ZoneB.Item1.First &&
                 a.Second < ZoneB.Item2.First)
             {
                 return Score.ZoneBGoal;
@@ -214,7 +207,7 @@ namespace HexBall
                 {
                     if (Players[i] == null)
                         continue;
-                    Players[i].Update(3);
+                    Players[i].Update(2);
                     attr[i] = Players[i].GetAttributies();
                 }
                 //Pilka

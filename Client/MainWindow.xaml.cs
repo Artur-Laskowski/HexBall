@@ -148,44 +148,6 @@ namespace Client
 
                 canv.Children.Add(myEllipse);
             }
-
-
-
-            AddGoalShape(Game.ZoneA.Item1, Game.ZoneA.Item2);
-            AddGoalpostShape(Game.SlupekLewoGora.Item1, Game.SlupekLewoGora.Item2);
-            AddGoalpostShape(Game.SlupekLewoDol.Item1, Game.SlupekLewoDol.Item2);
-
-            AddGoalShape(Game.ZoneB.Item1, Game.ZoneB.Item2);
-            AddGoalpostShape(Game.SlupekPrawoGora.Item1, Game.SlupekPrawoGora.Item2);
-            AddGoalpostShape(Game.SlupekPrawoDol.Item1, Game.SlupekPrawoDol.Item2);
-        }
-
-        private void AddGoalpostShape(Pair startPair, Pair endPair)
-        {
-            var brush = new SolidColorBrush { Color = Colour.White };
-            var goal = new Rectangle
-            {
-                Fill = brush,
-                Width = Math.Abs(startPair.First - endPair.First),
-                Height = Math.Abs(startPair.Second - endPair.Second)
-            };
-            canv.Children.Add(goal);
-            goal.SetValue(Canvas.TopProperty, startPair.Second);
-            goal.SetValue(Canvas.LeftProperty, startPair.First);
-        }
-
-        private void AddGoalShape(Pair startPair, Pair endPair)
-        {
-            var brush = new SolidColorBrush { Color = Colour.YellowTransparent };
-            var goal = new Rectangle
-            {
-                Fill = brush,
-                Width = Math.Abs(startPair.First - endPair.First),
-                Height = Math.Abs(startPair.Second - endPair.Second)
-            };
-            canv.Children.Add(goal);
-            goal.SetValue(Canvas.TopProperty, startPair.Second);
-            goal.SetValue(Canvas.LeftProperty, startPair.First);
         }
 
 
